@@ -1,18 +1,17 @@
 module BypassStoredValue
   module Clients
     class StadisClient
-      # this next line makes me sad. who wrote this?
-      def initialize(protocol, host, port, location_id, register_id, reference_number, vendor_id, vendor_cashier, userid, password)
-        @protocol = protocol
-        @host = host
-        @port = port
-        @location_id = location_id
-        @vendor_id = vendor_id
-        @vendor_cashier = vendor_cashier
-        @register_id = register_id
-        @reference_number = reference_number
-        @userid = userid
-        @password = password
+      def initialize(attrs={})
+        @protocol = attrs[:protocol]
+        @host = attrs[:host]
+        @port = attrs[:port]
+        @location_id = attrs[:location_id]
+        @vendor_id = attrs[:vendor_id]
+        @vendor_cashier = attrs[:vendor_cashier]
+        @register_id = attrs[:register_id]
+        @reference_number = attrs[:reference_number]
+        @userid = attrs[:userid]
+        @password = attrs[:password]
 
         client
       end

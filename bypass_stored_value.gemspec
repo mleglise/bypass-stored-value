@@ -26,5 +26,5 @@ Gem::Specification.new do |spec|
 
   #Dependencies
   spec.add_dependency 'savon', '>= 2.2.0'
-  spec.add_dependency('activesupport', '>= 4.0', '< 5.0.0')
+  spec.add_dependency('activesupport', '>= 3.0', '< 5.0.0')
 end

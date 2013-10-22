@@ -28,9 +28,6 @@ module BypassStoredValue
           @test_mode ? File.join(BypassStoredValue.root, 'wsdls', 'ceridian_test.wsdl.xml') : File.join(BypassStoredValue.root, 'wsdls', 'ceridian_production.wsdl.xml')
         end
 
-        def make_request(action, message)
-          response = @savon_client.call(action,message)
-        end
 
     end
   end

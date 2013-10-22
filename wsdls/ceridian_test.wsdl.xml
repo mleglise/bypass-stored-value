@@ -1,0 +1,1234 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<wsdl:definitions targetNamespace="http://service.svsxml.svs.com" xmlns:impl="http://service.svsxml.svs.com" xmlns:intf="http://service.svsxml.svs.com" xmlns:tns2="http://beans.svsxml.svs.com" xmlns:wsaw="http://www.w3.org/2006/05/addressing/wsdl" xmlns:wsdl="http://schemas.xmlsoap.org/wsdl/" xmlns:wsdlsoap="http://schemas.xmlsoap.org/wsdl/soap/" xmlns:wsi="http://ws-i.org/profiles/basic/1.1/xsd" xmlns:xsd="http://www.w3.org/2001/XMLSchema">
+  <wsdl:types>
+    <schema targetNamespace="http://beans.svsxml.svs.com" xmlns="http://www.w3.org/2001/XMLSchema">
+   <complexType name="CardRechargeRequest">
+    <sequence>
+     <element name="card" nillable="true" type="tns2:Card"/>
+     <element name="date" nillable="true" type="xsd:string"/>
+     <element name="invoiceNumber" nillable="true" type="xsd:string"/>
+     <element name="merchant" nillable="true" type="tns2:Merchant"/>
+     <element name="rechargeAmount" nillable="true" type="tns2:Amount"/>
+     <element name="routingID" nillable="true" type="xsd:string"/>
+     <element name="stan" nillable="true" type="xsd:string"/>
+     <element name="transactionID" nillable="true" type="xsd:string"/>
+     <element name="checkForDuplicate" type="xsd:boolean"/>
+    </sequence>
+   </complexType>
+   <complexType name="Card">
+    <sequence>
+     <element name="cardCurrency" nillable="true" type="xsd:string"/>
+     <element name="cardNumber" nillable="true" type="xsd:string"/>
+     <element name="pinNumber" nillable="true" type="xsd:string"/>
+     <element name="cardExpiration" nillable="true" type="xsd:string"/>
+     <element name="cardTrackOne" nillable="true" type="xsd:string"/>
+     <element name="cardTrackTwo" nillable="true" type="xsd:string"/>
+     <element name="eovDate" nillable="true" type="xsd:string"/>
+    </sequence>
+   </complexType>
+   <complexType name="Merchant">
+    <sequence>
+     <element name="merchantName" nillable="true" type="xsd:string"/>
+     <element name="merchantNumber" nillable="true" type="xsd:string"/>
+     <element name="storeNumber" nillable="true" type="xsd:string"/>
+     <element name="division" nillable="true" type="xsd:string"/>
+    </sequence>
+   </complexType>
+   <complexType name="Amount">
+    <sequence>
+     <element name="amount" type="xsd:double"/>
+     <element name="currency" nillable="true" type="xsd:string"/>
+    </sequence>
+   </complexType>
+   <complexType name="CardRechargeResponse">
+    <sequence>
+     <element name="approvedAmount" nillable="true" type="tns2:Amount"/>
+     <element name="authorizationCode" nillable="true" type="xsd:string"/>
+     <element name="balanceAmount" nillable="true" type="tns2:Amount"/>
+     <element name="card" nillable="true" type="tns2:Card"/>
+     <element name="conversionRate" nillable="true" type="xsd:string"/>
+     <element name="returnCode" nillable="true" type="tns2:ReturnCode"/>
+     <element name="stan" nillable="true" type="xsd:string"/>
+     <element name="transactionID" nillable="true" type="xsd:string"/>
+    </sequence>
+   </complexType>
+   <complexType name="ReturnCode">
+    <sequence>
+     <element name="returnCode" nillable="true" type="xsd:string"/>
+     <element name="returnDescription" nillable="true" type="xsd:string"/>
+    </sequence>
+   </complexType>
+   <complexType name="ReloadRequest">
+    <sequence>
+     <element name="card" nillable="true" type="tns2:Card"/>
+     <element name="date" nillable="true" type="xsd:string"/>
+     <element name="invoiceNumber" nillable="true" type="xsd:string"/>
+     <element name="merchant" nillable="true" type="tns2:Merchant"/>
+     <element name="reloadAmount" nillable="true" type="tns2:Amount"/>
+     <element name="transactionID" nillable="true" type="xsd:string"/>
+    </sequence>
+   </complexType>
+   <complexType name="ReloadResponse">
+    <sequence>
+     <element name="approvedAmount" nillable="true" type="tns2:Amount"/>
+     <element name="authorizationCode" nillable="true" type="xsd:string"/>
+     <element name="balanceAmount" nillable="true" type="tns2:Amount"/>
+     <element name="card" nillable="true" type="tns2:Card"/>
+     <element name="conversionRate" nillable="true" type="xsd:string"/>
+     <element name="returnCode" nillable="true" type="tns2:ReturnCode"/>
+     <element name="transactionID" nillable="true" type="xsd:string"/>
+    </sequence>
+   </complexType>
+   <complexType name="CompletePurchaseRequest">
+    <sequence>
+     <element name="date" nillable="true" type="xsd:string"/>
+     <element name="redemptionAmount" nillable="true" type="tns2:Amount"/>
+     <element name="card" nillable="true" type="tns2:Card"/>
+     <element name="merchant" nillable="true" type="tns2:Merchant"/>
+     <element name="invoiceNumber" nillable="true" type="xsd:string"/>
+     <element name="routingID" nillable="true" type="xsd:string"/>
+     <element name="stan" nillable="true" type="xsd:string"/>
+     <element name="transactionID" nillable="true" type="xsd:string"/>
+     <element name="checkForDuplicate" type="xsd:boolean"/>
+     <element name="alternateId" nillable="true" type="xsd:string"/>
+     <element name="posType" nillable="true" type="xsd:string"/>
+     <element name="offerCodeList" nillable="true" type="tns2:ArrayOfOfferCodeItem"/>
+    </sequence>
+   </complexType>
+   <complexType name="OfferCodeItem">
+    <sequence>
+     <element name="offerCode" nillable="true" type="xsd:string"/>
+    </sequence>
+   </complexType>
+   <complexType name="ArrayOfOfferCodeItem">
+    <sequence>
+     <element maxOccurs="unbounded" minOccurs="0" name="OfferCodeItem" nillable="true" type="tns2:OfferCodeItem"/>
+    </sequence>
+   </complexType>
+   <complexType name="CompletePurchaseResponse">
+    <sequence>
+     <element name="approvedAmount" nillable="true" type="tns2:Amount"/>
+     <element name="authorizationCode" nillable="true" type="xsd:string"/>
+     <element name="balanceAmount" nillable="true" type="tns2:Amount"/>
+     <element name="card" nillable="true" type="tns2:Card"/>
+     <element name="conversionRate" nillable="true" type="xsd:string"/>
+     <element name="returnCode" nillable="true" type="tns2:ReturnCode"/>
+     <element name="stan" nillable="true" type="xsd:string"/>
+     <element name="transactionID" nillable="true" type="xsd:string"/>
+     <element name="alternateId" nillable="true" type="xsd:string"/>
+     <element name="posType" nillable="true" type="xsd:string"/>
+     <element name="pointsBalance" nillable="true" type="xsd:string"/>
+     <element name="offerResponseList" nillable="true" type="tns2:ArrayOfPreAuthPurchaseOffer"/>
+     <element name="newOfferList" nillable="true" type="tns2:ArrayOfCompletePurchaseOffer"/>
+    </sequence>
+   </complexType>
+   <complexType name="PreAuthPurchaseOffer">
+    <sequence>
+     <element name="offerCode" nillable="true" type="xsd:string"/>
+     <element name="responseCode" nillable="true" type="xsd:string"/>
+     <element name="responseDescription" nillable="true" type="xsd:string"/>
+    </sequence>
+   </complexType>
+   <complexType name="ArrayOfPreAuthPurchaseOffer">
+    <sequence>
+     <element maxOccurs="unbounded" minOccurs="0" name="PreAuthPurchaseOffer" nillable="true" type="tns2:PreAuthPurchaseOffer"/>
+    </sequence>
+   </complexType>
+   <complexType name="CompletePurchaseOffer">
+    <sequence>
+     <element name="offerCode" nillable="true" type="xsd:string"/>
+     <element name="startDate" nillable="true" type="xsd:string"/>
+     <element name="endDate" nillable="true" type="xsd:string"/>
+     <element name="promoCode" nillable="true" type="xsd:string"/>
+     <element name="shortDescription" nillable="true" type="xsd:string"/>
+     <element name="longDescription" nillable="true" type="xsd:string"/>
+    </sequence>
+   </complexType>
+   <complexType name="ArrayOfCompletePurchaseOffer">
+    <sequence>
+     <element maxOccurs="unbounded" minOccurs="0" name="CompletePurchaseOffer" nillable="true" type="tns2:CompletePurchaseOffer"/>
+    </sequence>
+   </complexType>
+   <complexType name="EvaluatePurchaseRequest">
+    <sequence>
+     <element name="posType" nillable="true" type="xsd:string"/>
+     <element name="date" nillable="true" type="xsd:string"/>
+     <element name="redemptionAmount" nillable="true" type="tns2:Amount"/>
+     <element name="card" nillable="true" type="tns2:Card"/>
+     <element name="merchant" nillable="true" type="tns2:Merchant"/>
+     <element name="invoiceNumber" nillable="true" type="xsd:string"/>
+     <element name="routingID" nillable="true" type="xsd:string"/>
+     <element name="stan" nillable="true" type="xsd:string"/>
+     <element name="transactionID" nillable="true" type="xsd:string"/>
+     <element name="checkForDuplicate" type="xsd:boolean"/>
+     <element name="alternateId" nillable="true" type="xsd:string"/>
+    </sequence>
+   </complexType>
+   <complexType name="EvaluatePurchaseResponse">
+    <sequence>
+     <element name="offerList" nillable="true" type="tns2:ArrayOfEvaluatePurchaseOffer"/>
+     <element name="pointsBalance" nillable="true" type="xsd:string"/>
+     <element name="userRegistrationStatus" nillable="true" type="xsd:string"/>
+     <element name="balanceAmount" nillable="true" type="tns2:Amount"/>
+     <element name="card" nillable="true" type="tns2:Card"/>
+     <element name="conversionRate" nillable="true" type="xsd:string"/>
+     <element name="returnCode" nillable="true" type="tns2:ReturnCode"/>
+     <element name="stan" nillable="true" type="xsd:string"/>
+     <element name="transactionID" nillable="true" type="xsd:string"/>
+     <element name="alternateId" nillable="true" type="xsd:string"/>
+     <element name="posType" nillable="true" type="xsd:string"/>
+    </sequence>
+   </complexType>
+   <complexType name="EvaluatePurchaseOffer">
+    <sequence>
+     <element name="offerCode" nillable="true" type="xsd:string"/>
+     <element name="immediateRedeemReqd" nillable="true" type="xsd:string"/>
+     <element name="startDate" nillable="true" type="xsd:string"/>
+     <element name="endDate" nillable="true" type="xsd:string"/>
+     <element name="promoCode" nillable="true" type="xsd:string"/>
+     <element name="shortDescription" nillable="true" type="xsd:string"/>
+     <element name="longDescription" nillable="true" type="xsd:string"/>
+    </sequence>
+   </complexType>
+   <complexType name="ArrayOfEvaluatePurchaseOffer">
+    <sequence>
+     <element maxOccurs="unbounded" minOccurs="0" name="EvaluatePurchaseOffer" nillable="true" type="tns2:EvaluatePurchaseOffer"/>
+    </sequence>
+   </complexType>
+   <complexType name="CancelRequest">
+    <sequence>
+     <element name="card" nillable="true" type="tns2:Card"/>
+     <element name="date" nillable="true" type="xsd:string"/>
+     <element name="invoiceNumber" nillable="true" type="xsd:string"/>
+     <element name="merchant" nillable="true" type="tns2:Merchant"/>
+     <element name="routingID" nillable="true" type="xsd:string"/>
+     <element name="stan" nillable="true" type="xsd:string"/>
+     <element name="transactionAmount" nillable="true" type="tns2:Amount"/>
+    </sequence>
+   </complexType>
+   <complexType name="CancelResponse">
+    <sequence>
+     <element name="approvedAmount" nillable="true" type="tns2:Amount"/>
+     <element name="authorizationCode" nillable="true" type="xsd:string"/>
+     <element name="balanceAmount" nillable="true" type="tns2:Amount"/>
+     <element name="card" nillable="true" type="tns2:Card"/>
+     <element name="conversionRate" nillable="true" type="xsd:string"/>
+     <element name="returnCode" nillable="true" type="tns2:ReturnCode"/>
+     <element name="stan" nillable="true" type="xsd:string"/>
+    </sequence>
+   </complexType>
+   <complexType name="CashBackRequest">
+    <sequence>
+     <element name="card" nillable="true" type="tns2:Card"/>
+     <element name="cashBackAmount" nillable="true" type="tns2:Amount"/>
+     <element name="date" nillable="true" type="xsd:string"/>
+     <element name="invoiceNumber" nillable="true" type="xsd:string"/>
+     <element name="merchant" nillable="true" type="tns2:Merchant"/>
+     <element name="routingID" nillable="true" type="xsd:string"/>
+     <element name="stan" nillable="true" type="xsd:string"/>
+     <element name="transactionID" nillable="true" type="xsd:string"/>
+     <element name="checkForDuplicate" type="xsd:boolean"/>
+    </sequence>
+   </complexType>
+   <complexType name="CashBackResponse">
+    <sequence>
+     <element name="approvedAmount" nillable="true" type="tns2:Amount"/>
+     <element name="authorizationCode" nillable="true" type="xsd:string"/>
+     <element name="balanceAmount" nillable="true" type="tns2:Amount"/>
+     <element name="card" nillable="true" type="tns2:Card"/>
+     <element name="conversionRate" nillable="true" type="xsd:string"/>
+     <element name="returnCode" nillable="true" type="tns2:ReturnCode"/>
+     <element name="stan" nillable="true" type="xsd:string"/>
+     <element name="transactionID" nillable="true" type="xsd:string"/>
+    </sequence>
+   </complexType>
+   <complexType name="EnhancedBalanceInquiryRequest">
+    <sequence>
+     <element name="amount" nillable="true" type="tns2:Amount"/>
+     <element name="card" nillable="true" type="tns2:Card"/>
+     <element name="date" nillable="true" type="xsd:string"/>
+     <element name="invoiceNumber" nillable="true" type="xsd:string"/>
+     <element name="merchant" nillable="true" type="tns2:Merchant"/>
+     <element name="routingID" nillable="true" type="xsd:string"/>
+     <element name="stan" nillable="true" type="xsd:string"/>
+     <element name="transactionID" nillable="true" type="xsd:string"/>
+     <element name="checkForDuplicate" type="xsd:boolean"/>
+     <element name="locale" nillable="true" type="xsd:string"/>
+    </sequence>
+   </complexType>
+   <complexType name="EnhancedBalanceInquiryResponse">
+    <sequence>
+     <element name="balanceAmount" nillable="true" type="tns2:Amount"/>
+     <element name="preAuthAmount" nillable="true" type="tns2:Amount"/>
+     <element name="card" nillable="true" type="tns2:Card"/>
+     <element name="returnCode" nillable="true" type="tns2:ReturnCode"/>
+     <element name="authorizationCode" nillable="true" type="xsd:string"/>
+     <element name="conversionRate" nillable="true" type="xsd:string"/>
+     <element name="stan" nillable="true" type="xsd:string"/>
+     <element name="transactionID" nillable="true" type="xsd:string"/>
+     <element name="invoiceNumber" nillable="true" type="xsd:string"/>
+     <element name="transactionHistList" nillable="true" type="tns2:ArrayOfTransactionElement"/>
+    </sequence>
+   </complexType>
+   <complexType name="TransactionElement">
+    <sequence>
+     <element name="approvedAmount" nillable="true" type="tns2:Amount"/>
+     <element name="date" nillable="true" type="xsd:string"/>
+     <element name="time" nillable="true" type="xsd:string"/>
+     <element name="requestedAmount" nillable="true" type="tns2:Amount"/>
+     <element name="trnsAmount" nillable="true" type="tns2:Amount"/>
+     <element name="transactionType" nillable="true" type="tns2:TransactionType"/>
+     <element name="decimalPlaces" nillable="true" type="xsd:string"/>
+     <element name="eovDate" nillable="true" type="xsd:string"/>
+     <element name="merchant" nillable="true" type="tns2:Merchant"/>
+    </sequence>
+   </complexType>
+   <complexType name="TransactionType">
+    <sequence>
+     <element name="trnsCDindicator" nillable="true" type="xsd:string"/>
+     <element name="trnsCode" nillable="true" type="xsd:string"/>
+     <element name="trnsDescription" nillable="true" type="xsd:string"/>
+    </sequence>
+   </complexType>
+   <complexType name="ArrayOfTransactionElement">
+    <sequence>
+     <element maxOccurs="unbounded" minOccurs="0" name="TransactionElement" nillable="true" type="tns2:TransactionElement"/>
+    </sequence>
+   </complexType>
+   <complexType name="TipRequest">
+    <sequence>
+     <element name="card" nillable="true" type="tns2:Card"/>
+     <element name="date" nillable="true" type="xsd:string"/>
+     <element name="invoiceNumber" nillable="true" type="xsd:string"/>
+     <element name="merchant" nillable="true" type="tns2:Merchant"/>
+     <element name="routingID" nillable="true" type="xsd:string"/>
+     <element name="stan" nillable="true" type="xsd:string"/>
+     <element name="tipAmount" nillable="true" type="tns2:Amount"/>
+     <element name="transactionID" nillable="true" type="xsd:string"/>
+     <element name="checkForDuplicate" type="xsd:boolean"/>
+    </sequence>
+   </complexType>
+   <complexType name="TipResponse">
+    <sequence>
+     <element name="approvedAmount" nillable="true" type="tns2:Amount"/>
+     <element name="authorizationCode" nillable="true" type="xsd:string"/>
+     <element name="balanceAmount" nillable="true" type="tns2:Amount"/>
+     <element name="card" nillable="true" type="tns2:Card"/>
+     <element name="conversionRate" nillable="true" type="xsd:string"/>
+     <element name="returnCode" nillable="true" type="tns2:ReturnCode"/>
+     <element name="stan" nillable="true" type="xsd:string"/>
+     <element name="transactionID" nillable="true" type="xsd:string"/>
+    </sequence>
+   </complexType>
+   <complexType name="IssueGiftCardRequest">
+    <sequence>
+     <element name="card" nillable="true" type="tns2:Card"/>
+     <element name="date" nillable="true" type="xsd:string"/>
+     <element name="invoiceNumber" nillable="true" type="xsd:string"/>
+     <element name="issueAmount" nillable="true" type="tns2:Amount"/>
+     <element name="merchant" nillable="true" type="tns2:Merchant"/>
+     <element name="routingID" nillable="true" type="xsd:string"/>
+     <element name="stan" nillable="true" type="xsd:string"/>
+     <element name="transactionID" nillable="true" type="xsd:string"/>
+     <element name="checkForDuplicate" type="xsd:boolean"/>
+    </sequence>
+   </complexType>
+   <complexType name="IssueGiftCardResponse">
+    <sequence>
+     <element name="approvedAmount" nillable="true" type="tns2:Amount"/>
+     <element name="authorizationCode" nillable="true" type="xsd:string"/>
+     <element name="balanceAmount" nillable="true" type="tns2:Amount"/>
+     <element name="card" nillable="true" type="tns2:Card"/>
+     <element name="conversionRate" nillable="true" type="xsd:string"/>
+     <element name="returnCode" nillable="true" type="tns2:ReturnCode"/>
+     <element name="stan" nillable="true" type="xsd:string"/>
+     <element name="transactionID" nillable="true" type="xsd:string"/>
+    </sequence>
+   </complexType>
+   <complexType name="MerchandiseReturnRequest">
+    <sequence>
+     <element name="card" nillable="true" type="tns2:Card"/>
+     <element name="date" nillable="true" type="xsd:string"/>
+     <element name="invoiceNumber" nillable="true" type="xsd:string"/>
+     <element name="merchant" nillable="true" type="tns2:Merchant"/>
+     <element name="returnAmount" nillable="true" type="tns2:Amount"/>
+     <element name="routingID" nillable="true" type="xsd:string"/>
+     <element name="stan" nillable="true" type="xsd:string"/>
+     <element name="transactionID" nillable="true" type="xsd:string"/>
+     <element name="checkForDuplicate" type="xsd:boolean"/>
+    </sequence>
+   </complexType>
+   <complexType name="MerchandiseReturnResponse">
+    <sequence>
+     <element name="approvedAmount" nillable="true" type="tns2:Amount"/>
+     <element name="authorizationCode" nillable="true" type="xsd:string"/>
+     <element name="balanceAmount" nillable="true" type="tns2:Amount"/>
+     <element name="card" nillable="true" type="tns2:Card"/>
+     <element name="conversionRate" nillable="true" type="xsd:string"/>
+     <element name="returnCode" nillable="true" type="tns2:ReturnCode"/>
+     <element name="stan" nillable="true" type="xsd:string"/>
+     <element name="transactionID" nillable="true" type="xsd:string"/>
+    </sequence>
+   </complexType>
+   <complexType name="PreAuthRequest">
+    <sequence>
+     <element name="card" nillable="true" type="tns2:Card"/>
+     <element name="date" nillable="true" type="xsd:string"/>
+     <element name="invoiceNumber" nillable="true" type="xsd:string"/>
+     <element name="merchant" nillable="true" type="tns2:Merchant"/>
+     <element name="requestedAmount" nillable="true" type="tns2:Amount"/>
+     <element name="routingID" nillable="true" type="xsd:string"/>
+     <element name="stan" nillable="true" type="xsd:string"/>
+     <element name="transactionID" nillable="true" type="xsd:string"/>
+     <element name="checkForDuplicate" type="xsd:boolean"/>
+    </sequence>
+   </complexType>
+   <complexType name="PreAuthResponse">
+    <sequence>
+     <element name="approvedAmount" nillable="true" type="tns2:Amount"/>
+     <element name="authorizationCode" nillable="true" type="xsd:string"/>
+     <element name="balanceAmount" nillable="true" type="tns2:Amount"/>
+     <element name="card" nillable="true" type="tns2:Card"/>
+     <element name="conversionRate" nillable="true" type="xsd:string"/>
+     <element name="returnCode" nillable="true" type="tns2:ReturnCode"/>
+     <element name="stan" nillable="true" type="xsd:string"/>
+     <element name="transactionID" nillable="true" type="xsd:string"/>
+    </sequence>
+   </complexType>
+   <complexType name="CardActivationRequest">
+    <sequence>
+     <element name="activationAmount" nillable="true" type="tns2:Amount"/>
+     <element name="card" nillable="true" type="tns2:Card"/>
+     <element name="date" nillable="true" type="xsd:string"/>
+     <element name="invoiceNumber" nillable="true" type="xsd:string"/>
+     <element name="merchant" nillable="true" type="tns2:Merchant"/>
+     <element name="routingID" nillable="true" type="xsd:string"/>
+     <element name="stan" nillable="true" type="xsd:string"/>
+     <element name="transactionID" nillable="true" type="xsd:string"/>
+     <element name="checkForDuplicate" type="xsd:boolean"/>
+    </sequence>
+   </complexType>
+   <complexType name="CardActivationResponse">
+    <sequence>
+     <element name="approvedAmount" nillable="true" type="tns2:Amount"/>
+     <element name="authorizationCode" nillable="true" type="xsd:string"/>
+     <element name="balanceAmount" nillable="true" type="tns2:Amount"/>
+     <element name="card" nillable="true" type="tns2:Card"/>
+     <element name="conversionRate" nillable="true" type="xsd:string"/>
+     <element name="returnCode" nillable="true" type="tns2:ReturnCode"/>
+     <element name="stan" nillable="true" type="xsd:string"/>
+     <element name="transactionID" nillable="true" type="xsd:string"/>
+    </sequence>
+   </complexType>
+   <complexType name="RedemptionRequest">
+    <sequence>
+     <element name="card" nillable="true" type="tns2:Card"/>
+     <element name="date" nillable="true" type="xsd:string"/>
+     <element name="invoiceNumber" nillable="true" type="xsd:string"/>
+     <element name="merchant" nillable="true" type="tns2:Merchant"/>
+     <element name="redemptionAmount" nillable="true" type="tns2:Amount"/>
+     <element name="routingID" nillable="true" type="xsd:string"/>
+     <element name="stan" nillable="true" type="xsd:string"/>
+     <element name="transactionID" nillable="true" type="xsd:string"/>
+     <element name="checkForDuplicate" type="xsd:boolean"/>
+    </sequence>
+   </complexType>
+   <complexType name="RedemptionResponse">
+    <sequence>
+     <element name="approvedAmount" nillable="true" type="tns2:Amount"/>
+     <element name="authorizationCode" nillable="true" type="xsd:string"/>
+     <element name="balanceAmount" nillable="true" type="tns2:Amount"/>
+     <element name="card" nillable="true" type="tns2:Card"/>
+     <element name="conversionRate" nillable="true" type="xsd:string"/>
+     <element name="returnCode" nillable="true" type="tns2:ReturnCode"/>
+     <element name="stan" nillable="true" type="xsd:string"/>
+     <element name="transactionID" nillable="true" type="xsd:string"/>
+    </sequence>
+   </complexType>
+   <complexType name="BalanceInquiryRequest">
+    <sequence>
+     <element name="amount" nillable="true" type="tns2:Amount"/>
+     <element name="card" nillable="true" type="tns2:Card"/>
+     <element name="merchant" nillable="true" type="tns2:Merchant"/>
+     <element name="invoiceNumber" nillable="true" type="xsd:string"/>
+     <element name="routingID" nillable="true" type="xsd:string"/>
+     <element name="stan" nillable="true" type="xsd:string"/>
+     <element name="transactionID" nillable="true" type="xsd:string"/>
+     <element name="checkForDuplicate" type="xsd:boolean"/>
+     <element name="date" nillable="true" type="xsd:string"/>
+    </sequence>
+   </complexType>
+   <complexType name="BalanceInquiryResponse">
+    <sequence>
+     <element name="authorizationCode" nillable="true" type="xsd:string"/>
+     <element name="balanceAmount" nillable="true" type="tns2:Amount"/>
+     <element name="card" nillable="true" type="tns2:Card"/>
+     <element name="conversionRate" nillable="true" type="xsd:string"/>
+     <element name="returnCode" nillable="true" type="tns2:ReturnCode"/>
+     <element name="stan" nillable="true" type="xsd:string"/>
+     <element name="transactionID" nillable="true" type="xsd:string"/>
+    </sequence>
+   </complexType>
+   <complexType name="ReversalRequest">
+    <sequence>
+     <element name="card" nillable="true" type="tns2:Card"/>
+     <element name="date" nillable="true" type="xsd:string"/>
+     <element name="invoiceNumber" nillable="true" type="xsd:string"/>
+     <element name="merchant" nillable="true" type="tns2:Merchant"/>
+     <element name="routingID" nillable="true" type="xsd:string"/>
+     <element name="stan" nillable="true" type="xsd:string"/>
+     <element name="transactionAmount" nillable="true" type="tns2:Amount"/>
+    </sequence>
+   </complexType>
+   <complexType name="ReversalResponse">
+    <sequence>
+     <element name="approvedAmount" nillable="true" type="tns2:Amount"/>
+     <element name="authorizationCode" nillable="true" type="xsd:string"/>
+     <element name="balanceAmount" nillable="true" type="tns2:Amount"/>
+     <element name="card" nillable="true" type="tns2:Card"/>
+     <element name="conversionRate" nillable="true" type="xsd:string"/>
+     <element name="returnCode" nillable="true" type="tns2:ReturnCode"/>
+     <element name="stan" nillable="true" type="xsd:string"/>
+    </sequence>
+   </complexType>
+   <complexType name="PreAuthPurchaseRequest">
+    <sequence>
+     <element name="date" nillable="true" type="xsd:string"/>
+     <element name="redemptionAmount" nillable="true" type="tns2:Amount"/>
+     <element name="card" nillable="true" type="tns2:Card"/>
+     <element name="merchant" nillable="true" type="tns2:Merchant"/>
+     <element name="invoiceNumber" nillable="true" type="xsd:string"/>
+     <element name="routingID" nillable="true" type="xsd:string"/>
+     <element name="stan" nillable="true" type="xsd:string"/>
+     <element name="transactionID" nillable="true" type="xsd:string"/>
+     <element name="checkForDuplicate" type="xsd:boolean"/>
+     <element name="alternateId" nillable="true" type="xsd:string"/>
+     <element name="posType" nillable="true" type="xsd:string"/>
+     <element name="offerCodeList" nillable="true" type="tns2:ArrayOfOfferCodeItem"/>
+    </sequence>
+   </complexType>
+   <complexType name="PreAuthPurchaseResponse">
+    <sequence>
+     <element name="approvedAmount" nillable="true" type="tns2:Amount"/>
+     <element name="authorizationCode" nillable="true" type="xsd:string"/>
+     <element name="balanceAmount" nillable="true" type="tns2:Amount"/>
+     <element name="card" nillable="true" type="tns2:Card"/>
+     <element name="conversionRate" nillable="true" type="xsd:string"/>
+     <element name="returnCode" nillable="true" type="tns2:ReturnCode"/>
+     <element name="stan" nillable="true" type="xsd:string"/>
+     <element name="transactionID" nillable="true" type="xsd:string"/>
+     <element name="alternateId" nillable="true" type="xsd:string"/>
+     <element name="posType" nillable="true" type="xsd:string"/>
+     <element name="pointsBalance" nillable="true" type="xsd:string"/>
+     <element name="offerResponseList" nillable="true" type="tns2:ArrayOfPreAuthPurchaseOffer"/>
+    </sequence>
+   </complexType>
+   <complexType name="NetworkRequest">
+    <sequence>
+     <element name="date" nillable="true" type="xsd:string"/>
+     <element name="merchant" nillable="true" type="tns2:Merchant"/>
+     <element name="networkCode" nillable="true" type="xsd:string"/>
+     <element name="routingID" nillable="true" type="xsd:string"/>
+     <element name="stan" nillable="true" type="xsd:string"/>
+    </sequence>
+   </complexType>
+   <complexType name="NetworkResponse">
+    <sequence>
+     <element name="authorizationCode" nillable="true" type="xsd:string"/>
+     <element name="returnCode" nillable="true" type="tns2:ReturnCode"/>
+     <element name="stan" nillable="true" type="xsd:string"/>
+    </sequence>
+   </complexType>
+   <complexType name="PreAuthCompleteRequest">
+    <sequence>
+     <element name="card" nillable="true" type="tns2:Card"/>
+     <element name="date" nillable="true" type="xsd:string"/>
+     <element name="invoiceNumber" nillable="true" type="xsd:string"/>
+     <element name="merchant" nillable="true" type="tns2:Merchant"/>
+     <element name="routingID" nillable="true" type="xsd:string"/>
+     <element name="stan" nillable="true" type="xsd:string"/>
+     <element name="transactionAmount" nillable="true" type="tns2:Amount"/>
+     <element name="transactionID" nillable="true" type="xsd:string"/>
+     <element name="checkForDuplicate" type="xsd:boolean"/>
+    </sequence>
+   </complexType>
+   <complexType name="PreAuthCompleteResponse">
+    <sequence>
+     <element name="approvedAmount" nillable="true" type="tns2:Amount"/>
+     <element name="authorizationCode" nillable="true" type="xsd:string"/>
+     <element name="balanceAmount" nillable="true" type="tns2:Amount"/>
+     <element name="card" nillable="true" type="tns2:Card"/>
+     <element name="conversionRate" nillable="true" type="xsd:string"/>
+     <element name="returnCode" nillable="true" type="tns2:ReturnCode"/>
+     <element name="stan" nillable="true" type="xsd:string"/>
+     <element name="transactionID" nillable="true" type="xsd:string"/>
+    </sequence>
+   </complexType>
+   <complexType name="IssueVirtualGiftCardRequest">
+    <sequence>
+     <element name="date" nillable="true" type="xsd:string"/>
+     <element name="invoiceNumber" nillable="true" type="xsd:string"/>
+     <element name="issueAmount" nillable="true" type="tns2:Amount"/>
+     <element name="merchant" nillable="true" type="tns2:Merchant"/>
+     <element name="routingID" nillable="true" type="xsd:string"/>
+     <element name="stan" nillable="true" type="xsd:string"/>
+     <element name="transactionID" nillable="true" type="xsd:string"/>
+     <element name="checkForDuplicate" type="xsd:boolean"/>
+    </sequence>
+   </complexType>
+   <complexType name="IssueVirtualGiftCardResponse">
+    <sequence>
+     <element name="approvedAmount" nillable="true" type="tns2:Amount"/>
+     <element name="authorizationCode" nillable="true" type="xsd:string"/>
+     <element name="balanceAmount" nillable="true" type="tns2:Amount"/>
+     <element name="card" nillable="true" type="tns2:Card"/>
+     <element name="conversionRate" nillable="true" type="xsd:string"/>
+     <element name="returnCode" nillable="true" type="tns2:ReturnCode"/>
+     <element name="stan" nillable="true" type="xsd:string"/>
+     <element name="transactionID" nillable="true" type="xsd:string"/>
+    </sequence>
+   </complexType>
+  </schema>
+    <schema targetNamespace="http://service.svsxml.svs.com" xmlns="http://www.w3.org/2001/XMLSchema">
+   <import namespace="http://beans.svsxml.svs.com"/>
+   <element name="cardRechargeResponse">
+    <complexType>
+     <sequence>
+      <element name="cardRechargeReturn" nillable="true" type="tns2:CardRechargeResponse"/>
+     </sequence>
+    </complexType>
+   </element>
+   <element name="reload">
+    <complexType>
+     <sequence>
+      <element name="request" nillable="true" type="tns2:ReloadRequest"/>
+     </sequence>
+    </complexType>
+   </element>
+   <element name="reloadResponse">
+    <complexType>
+     <sequence>
+      <element name="reloadReturn" nillable="true" type="tns2:ReloadResponse"/>
+     </sequence>
+    </complexType>
+   </element>
+   <element name="completePurchase">
+    <complexType>
+     <sequence>
+      <element name="request" nillable="true" type="tns2:CompletePurchaseRequest"/>
+     </sequence>
+    </complexType>
+   </element>
+   <element name="completePurchaseResponse">
+    <complexType>
+     <sequence>
+      <element name="completePurchaseReturn" nillable="true" type="tns2:CompletePurchaseResponse"/>
+     </sequence>
+    </complexType>
+   </element>
+   <element name="evaluatePurchase">
+    <complexType>
+     <sequence>
+      <element name="request" nillable="true" type="tns2:EvaluatePurchaseRequest"/>
+     </sequence>
+    </complexType>
+   </element>
+   <element name="evaluatePurchaseResponse">
+    <complexType>
+     <sequence>
+      <element name="evaluatePurchaseReturn" nillable="true" type="tns2:EvaluatePurchaseResponse"/>
+     </sequence>
+    </complexType>
+   </element>
+   <element name="cancel">
+    <complexType>
+     <sequence>
+      <element name="request" nillable="true" type="tns2:CancelRequest"/>
+     </sequence>
+    </complexType>
+   </element>
+   <element name="cancelResponse">
+    <complexType>
+     <sequence>
+      <element name="cancelReturn" nillable="true" type="tns2:CancelResponse"/>
+     </sequence>
+    </complexType>
+   </element>
+   <element name="cashBack">
+    <complexType>
+     <sequence>
+      <element name="request" nillable="true" type="tns2:CashBackRequest"/>
+     </sequence>
+    </complexType>
+   </element>
+   <element name="cashBackResponse">
+    <complexType>
+     <sequence>
+      <element name="cashBackReturn" nillable="true" type="tns2:CashBackResponse"/>
+     </sequence>
+    </complexType>
+   </element>
+   <element name="enhancedBalanceInquiry">
+    <complexType>
+     <sequence>
+      <element name="request" nillable="true" type="tns2:EnhancedBalanceInquiryRequest"/>
+     </sequence>
+    </complexType>
+   </element>
+   <element name="enhancedBalanceInquiryResponse">
+    <complexType>
+     <sequence>
+      <element name="enhancedBalanceInquiryReturn" nillable="true" type="tns2:EnhancedBalanceInquiryResponse"/>
+     </sequence>
+    </complexType>
+   </element>
+   <element name="tip">
+    <complexType>
+     <sequence>
+      <element name="request" nillable="true" type="tns2:TipRequest"/>
+     </sequence>
+    </complexType>
+   </element>
+   <element name="tipResponse">
+    <complexType>
+     <sequence>
+      <element name="tipReturn" nillable="true" type="tns2:TipResponse"/>
+     </sequence>
+    </complexType>
+   </element>
+   <element name="issueGiftCard">
+    <complexType>
+     <sequence>
+      <element name="request" nillable="true" type="tns2:IssueGiftCardRequest"/>
+     </sequence>
+    </complexType>
+   </element>
+   <element name="issueGiftCardResponse">
+    <complexType>
+     <sequence>
+      <element name="issueGiftCardReturn" nillable="true" type="tns2:IssueGiftCardResponse"/>
+     </sequence>
+    </complexType>
+   </element>
+   <element name="merchandiseReturn">
+    <complexType>
+     <sequence>
+      <element name="request" nillable="true" type="tns2:MerchandiseReturnRequest"/>
+     </sequence>
+    </complexType>
+   </element>
+   <element name="merchandiseReturnResponse">
+    <complexType>
+     <sequence>
+      <element name="merchandiseReturnReturn" nillable="true" type="tns2:MerchandiseReturnResponse"/>
+     </sequence>
+    </complexType>
+   </element>
+   <element name="preAuth">
+    <complexType>
+     <sequence>
+      <element name="request" nillable="true" type="tns2:PreAuthRequest"/>
+     </sequence>
+    </complexType>
+   </element>
+   <element name="preAuthResponse">
+    <complexType>
+     <sequence>
+      <element name="preAuthReturn" nillable="true" type="tns2:PreAuthResponse"/>
+     </sequence>
+    </complexType>
+   </element>
+   <element name="cardActivation">
+    <complexType>
+     <sequence>
+      <element name="request" nillable="true" type="tns2:CardActivationRequest"/>
+     </sequence>
+    </complexType>
+   </element>
+   <element name="cardActivationResponse">
+    <complexType>
+     <sequence>
+      <element name="cardActivationReturn" nillable="true" type="tns2:CardActivationResponse"/>
+     </sequence>
+    </complexType>
+   </element>
+   <element name="redemption">
+    <complexType>
+     <sequence>
+      <element name="request" nillable="true" type="tns2:RedemptionRequest"/>
+     </sequence>
+    </complexType>
+   </element>
+   <element name="redemptionResponse">
+    <complexType>
+     <sequence>
+      <element name="redemptionReturn" nillable="true" type="tns2:RedemptionResponse"/>
+     </sequence>
+    </complexType>
+   </element>
+   <element name="balanceInquiry">
+    <complexType>
+     <sequence>
+      <element name="request" nillable="true" type="tns2:BalanceInquiryRequest"/>
+     </sequence>
+    </complexType>
+   </element>
+   <element name="balanceInquiryResponse">
+    <complexType>
+     <sequence>
+      <element name="balanceInquiryReturn" nillable="true" type="tns2:BalanceInquiryResponse"/>
+     </sequence>
+    </complexType>
+   </element>
+   <element name="reversal">
+    <complexType>
+     <sequence>
+      <element name="request" nillable="true" type="tns2:ReversalRequest"/>
+     </sequence>
+    </complexType>
+   </element>
+   <element name="reversalResponse">
+    <complexType>
+     <sequence>
+      <element name="reversalReturn" nillable="true" type="tns2:ReversalResponse"/>
+     </sequence>
+    </complexType>
+   </element>
+   <element name="preAuthPurchase">
+    <complexType>
+     <sequence>
+      <element name="request" nillable="true" type="tns2:PreAuthPurchaseRequest"/>
+     </sequence>
+    </complexType>
+   </element>
+   <element name="preAuthPurchaseResponse">
+    <complexType>
+     <sequence>
+      <element name="preAuthPurchaseReturn" nillable="true" type="tns2:PreAuthPurchaseResponse"/>
+     </sequence>
+    </complexType>
+   </element>
+   <element name="network">
+    <complexType>
+     <sequence>
+      <element name="request" nillable="true" type="tns2:NetworkRequest"/>
+     </sequence>
+    </complexType>
+   </element>
+   <element name="networkResponse">
+    <complexType>
+     <sequence>
+      <element name="networkReturn" nillable="true" type="tns2:NetworkResponse"/>
+     </sequence>
+    </complexType>
+   </element>
+   <element name="preAuthComplete">
+    <complexType>
+     <sequence>
+      <element name="request" nillable="true" type="tns2:PreAuthCompleteRequest"/>
+     </sequence>
+    </complexType>
+   </element>
+   <element name="preAuthCompleteResponse">
+    <complexType>
+     <sequence>
+      <element name="preAuthCompleteReturn" nillable="true" type="tns2:PreAuthCompleteResponse"/>
+     </sequence>
+    </complexType>
+   </element>
+   <element name="issueVirtualGiftCard">
+    <complexType>
+     <sequence>
+      <element name="request" nillable="true" type="tns2:IssueVirtualGiftCardRequest"/>
+     </sequence>
+    </complexType>
+   </element>
+   <element name="issueVirtualGiftCardResponse">
+    <complexType>
+     <sequence>
+      <element name="issueVirtualGiftCardReturn" nillable="true" type="tns2:IssueVirtualGiftCardResponse"/>
+     </sequence>
+    </complexType>
+   </element>
+   <element name="cardRecharge">
+    <complexType>
+     <sequence>
+      <element name="request" nillable="true" type="tns2:CardRechargeRequest"/>
+     </sequence>
+    </complexType>
+   </element>
+  </schema>
+  </wsdl:types>
+  <wsdl:message name="tipRequest">
+    <wsdl:part element="intf:tip" name="parameters"/>
+  </wsdl:message>
+  <wsdl:message name="reversalRequest">
+    <wsdl:part element="intf:reversal" name="parameters"/>
+  </wsdl:message>
+  <wsdl:message name="reloadRequest">
+    <wsdl:part element="intf:reload" name="parameters"/>
+  </wsdl:message>
+  <wsdl:message name="balanceInquiryResponse">
+    <wsdl:part element="intf:balanceInquiryResponse" name="parameters"/>
+  </wsdl:message>
+  <wsdl:message name="cancelResponse">
+    <wsdl:part element="intf:cancelResponse" name="parameters"/>
+  </wsdl:message>
+  <wsdl:message name="preAuthPurchaseRequest">
+    <wsdl:part element="intf:preAuthPurchase" name="parameters"/>
+  </wsdl:message>
+  <wsdl:message name="cashBackRequest">
+    <wsdl:part element="intf:cashBack" name="parameters"/>
+  </wsdl:message>
+  <wsdl:message name="preAuthCompleteResponse">
+    <wsdl:part element="intf:preAuthCompleteResponse" name="parameters"/>
+  </wsdl:message>
+  <wsdl:message name="evaluatePurchaseResponse">
+    <wsdl:part element="intf:evaluatePurchaseResponse" name="parameters"/>
+  </wsdl:message>
+  <wsdl:message name="cashBackResponse">
+    <wsdl:part element="intf:cashBackResponse" name="parameters"/>
+  </wsdl:message>
+  <wsdl:message name="issueVirtualGiftCardResponse">
+    <wsdl:part element="intf:issueVirtualGiftCardResponse" name="parameters"/>
+  </wsdl:message>
+  <wsdl:message name="issueGiftCardResponse">
+    <wsdl:part element="intf:issueGiftCardResponse" name="parameters"/>
+  </wsdl:message>
+  <wsdl:message name="cancelRequest">
+    <wsdl:part element="intf:cancel" name="parameters"/>
+  </wsdl:message>
+  <wsdl:message name="completePurchaseResponse">
+    <wsdl:part element="intf:completePurchaseResponse" name="parameters"/>
+  </wsdl:message>
+  <wsdl:message name="cardRechargeResponse">
+    <wsdl:part element="intf:cardRechargeResponse" name="parameters"/>
+  </wsdl:message>
+  <wsdl:message name="networkResponse">
+    <wsdl:part element="intf:networkResponse" name="parameters"/>
+  </wsdl:message>
+  <wsdl:message name="preAuthCompleteRequest">
+    <wsdl:part element="intf:preAuthComplete" name="parameters"/>
+  </wsdl:message>
+  <wsdl:message name="completePurchaseRequest">
+    <wsdl:part element="intf:completePurchase" name="parameters"/>
+  </wsdl:message>
+  <wsdl:message name="merchandiseReturnResponse">
+    <wsdl:part element="intf:merchandiseReturnResponse" name="parameters"/>
+  </wsdl:message>
+  <wsdl:message name="redemptionResponse">
+    <wsdl:part element="intf:redemptionResponse" name="parameters"/>
+  </wsdl:message>
+  <wsdl:message name="enhancedBalanceInquiryResponse">
+    <wsdl:part element="intf:enhancedBalanceInquiryResponse" name="parameters"/>
+  </wsdl:message>
+  <wsdl:message name="cardActivationRequest">
+    <wsdl:part element="intf:cardActivation" name="parameters"/>
+  </wsdl:message>
+  <wsdl:message name="reversalResponse">
+    <wsdl:part element="intf:reversalResponse" name="parameters"/>
+  </wsdl:message>
+  <wsdl:message name="reloadResponse">
+    <wsdl:part element="intf:reloadResponse" name="parameters"/>
+  </wsdl:message>
+  <wsdl:message name="balanceInquiryRequest">
+    <wsdl:part element="intf:balanceInquiry" name="parameters"/>
+  </wsdl:message>
+  <wsdl:message name="merchandiseReturnRequest">
+    <wsdl:part element="intf:merchandiseReturn" name="parameters"/>
+  </wsdl:message>
+  <wsdl:message name="cardRechargeRequest">
+    <wsdl:part element="intf:cardRecharge" name="parameters"/>
+  </wsdl:message>
+  <wsdl:message name="enhancedBalanceInquiryRequest">
+    <wsdl:part element="intf:enhancedBalanceInquiry" name="parameters"/>
+  </wsdl:message>
+  <wsdl:message name="networkRequest">
+    <wsdl:part element="intf:network" name="parameters"/>
+  </wsdl:message>
+  <wsdl:message name="preAuthRequest">
+    <wsdl:part element="intf:preAuth" name="parameters"/>
+  </wsdl:message>
+  <wsdl:message name="tipResponse">
+    <wsdl:part element="intf:tipResponse" name="parameters"/>
+  </wsdl:message>
+  <wsdl:message name="issueVirtualGiftCardRequest">
+    <wsdl:part element="intf:issueVirtualGiftCard" name="parameters"/>
+  </wsdl:message>
+  <wsdl:message name="cardActivationResponse">
+    <wsdl:part element="intf:cardActivationResponse" name="parameters"/>
+  </wsdl:message>
+  <wsdl:message name="redemptionRequest">
+    <wsdl:part element="intf:redemption" name="parameters"/>
+  </wsdl:message>
+  <wsdl:message name="evaluatePurchaseRequest">
+    <wsdl:part element="intf:evaluatePurchase" name="parameters"/>
+  </wsdl:message>
+  <wsdl:message name="preAuthPurchaseResponse">
+    <wsdl:part element="intf:preAuthPurchaseResponse" name="parameters"/>
+  </wsdl:message>
+  <wsdl:message name="issueGiftCardRequest">
+    <wsdl:part element="intf:issueGiftCard" name="parameters"/>
+  </wsdl:message>
+  <wsdl:message name="preAuthResponse">
+    <wsdl:part element="intf:preAuthResponse" name="parameters"/>
+  </wsdl:message>
+  <wsdl:portType name="SVSXMLWay">
+    <wsdl:operation name="cardRecharge">
+      <wsdl:input message="intf:cardRechargeRequest" name="cardRechargeRequest"/>
+      <wsdl:output message="intf:cardRechargeResponse" name="cardRechargeResponse"/>
+    </wsdl:operation>
+    <wsdl:operation name="reload">
+      <wsdl:input message="intf:reloadRequest" name="reloadRequest"/>
+      <wsdl:output message="intf:reloadResponse" name="reloadResponse"/>
+    </wsdl:operation>
+    <wsdl:operation name="completePurchase">
+      <wsdl:input message="intf:completePurchaseRequest" name="completePurchaseRequest"/>
+      <wsdl:output message="intf:completePurchaseResponse" name="completePurchaseResponse"/>
+    </wsdl:operation>
+    <wsdl:operation name="evaluatePurchase">
+      <wsdl:input message="intf:evaluatePurchaseRequest" name="evaluatePurchaseRequest"/>
+      <wsdl:output message="intf:evaluatePurchaseResponse" name="evaluatePurchaseResponse"/>
+    </wsdl:operation>
+    <wsdl:operation name="cancel">
+      <wsdl:input message="intf:cancelRequest" name="cancelRequest"/>
+      <wsdl:output message="intf:cancelResponse" name="cancelResponse"/>
+    </wsdl:operation>
+    <wsdl:operation name="cashBack">
+      <wsdl:input message="intf:cashBackRequest" name="cashBackRequest"/>
+      <wsdl:output message="intf:cashBackResponse" name="cashBackResponse"/>
+    </wsdl:operation>
+    <wsdl:operation name="enhancedBalanceInquiry">
+      <wsdl:input message="intf:enhancedBalanceInquiryRequest" name="enhancedBalanceInquiryRequest"/>
+      <wsdl:output message="intf:enhancedBalanceInquiryResponse" name="enhancedBalanceInquiryResponse"/>
+    </wsdl:operation>
+    <wsdl:operation name="tip">
+      <wsdl:input message="intf:tipRequest" name="tipRequest"/>
+      <wsdl:output message="intf:tipResponse" name="tipResponse"/>
+    </wsdl:operation>
+    <wsdl:operation name="issueGiftCard">
+      <wsdl:input message="intf:issueGiftCardRequest" name="issueGiftCardRequest"/>
+      <wsdl:output message="intf:issueGiftCardResponse" name="issueGiftCardResponse"/>
+    </wsdl:operation>
+    <wsdl:operation name="merchandiseReturn">
+      <wsdl:input message="intf:merchandiseReturnRequest" name="merchandiseReturnRequest"/>
+      <wsdl:output message="intf:merchandiseReturnResponse" name="merchandiseReturnResponse"/>
+    </wsdl:operation>
+    <wsdl:operation name="preAuth">
+      <wsdl:input message="intf:preAuthRequest" name="preAuthRequest"/>
+      <wsdl:output message="intf:preAuthResponse" name="preAuthResponse"/>
+    </wsdl:operation>
+    <wsdl:operation name="cardActivation">
+      <wsdl:input message="intf:cardActivationRequest" name="cardActivationRequest"/>
+      <wsdl:output message="intf:cardActivationResponse" name="cardActivationResponse"/>
+    </wsdl:operation>
+    <wsdl:operation name="redemption">
+      <wsdl:input message="intf:redemptionRequest" name="redemptionRequest"/>
+      <wsdl:output message="intf:redemptionResponse" name="redemptionResponse"/>
+    </wsdl:operation>
+    <wsdl:operation name="balanceInquiry">
+      <wsdl:input message="intf:balanceInquiryRequest" name="balanceInquiryRequest"/>
+      <wsdl:output message="intf:balanceInquiryResponse" name="balanceInquiryResponse"/>
+    </wsdl:operation>
+    <wsdl:operation name="reversal">
+      <wsdl:input message="intf:reversalRequest" name="reversalRequest"/>
+      <wsdl:output message="intf:reversalResponse" name="reversalResponse"/>
+    </wsdl:operation>
+    <wsdl:operation name="preAuthPurchase">
+      <wsdl:input message="intf:preAuthPurchaseRequest" name="preAuthPurchaseRequest"/>
+      <wsdl:output message="intf:preAuthPurchaseResponse" name="preAuthPurchaseResponse"/>
+    </wsdl:operation>
+    <wsdl:operation name="network">
+      <wsdl:input message="intf:networkRequest" name="networkRequest"/>
+      <wsdl:output message="intf:networkResponse" name="networkResponse"/>
+    </wsdl:operation>
+    <wsdl:operation name="preAuthComplete">
+      <wsdl:input message="intf:preAuthCompleteRequest" name="preAuthCompleteRequest"/>
+      <wsdl:output message="intf:preAuthCompleteResponse" name="preAuthCompleteResponse"/>
+    </wsdl:operation>
+    <wsdl:operation name="issueVirtualGiftCard">
+      <wsdl:input message="intf:issueVirtualGiftCardRequest" name="issueVirtualGiftCardRequest"/>
+      <wsdl:output message="intf:issueVirtualGiftCardResponse" name="issueVirtualGiftCardResponse"/>
+    </wsdl:operation>
+  </wsdl:portType>
+  <wsdl:binding name="SVSXMLWaySoapBinding" type="intf:SVSXMLWay">
+<wsaw:UsingAddressing wsdl:required="false"/>
+    <wsdlsoap:binding style="document" transport="http://schemas.xmlsoap.org/soap/http"/>
+    <wsdl:operation name="cardRecharge">
+      <wsdlsoap:operation soapAction="cardRecharge"/>
+      <wsdl:input name="cardRechargeRequest">
+        <wsdlsoap:body use="literal"/>
+      </wsdl:input>
+      <wsdl:output name="cardRechargeResponse">
+        <wsdlsoap:body use="literal"/>
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="reload">
+      <wsdlsoap:operation soapAction="reload"/>
+      <wsdl:input name="reloadRequest">
+        <wsdlsoap:body use="literal"/>
+      </wsdl:input>
+      <wsdl:output name="reloadResponse">
+        <wsdlsoap:body use="literal"/>
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="completePurchase">
+      <wsdlsoap:operation soapAction="completePurchase"/>
+      <wsdl:input name="completePurchaseRequest">
+        <wsdlsoap:body use="literal"/>
+      </wsdl:input>
+      <wsdl:output name="completePurchaseResponse">
+        <wsdlsoap:body use="literal"/>
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="evaluatePurchase">
+      <wsdlsoap:operation soapAction="evaluatePurchase"/>
+      <wsdl:input name="evaluatePurchaseRequest">
+        <wsdlsoap:body use="literal"/>
+      </wsdl:input>
+      <wsdl:output name="evaluatePurchaseResponse">
+        <wsdlsoap:body use="literal"/>
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="cancel">
+      <wsdlsoap:operation soapAction="cancel"/>
+      <wsdl:input name="cancelRequest">
+        <wsdlsoap:body use="literal"/>
+      </wsdl:input>
+      <wsdl:output name="cancelResponse">
+        <wsdlsoap:body use="literal"/>
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="cashBack">
+      <wsdlsoap:operation soapAction="cashBack"/>
+      <wsdl:input name="cashBackRequest">
+        <wsdlsoap:body use="literal"/>
+      </wsdl:input>
+      <wsdl:output name="cashBackResponse">
+        <wsdlsoap:body use="literal"/>
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="enhancedBalanceInquiry">
+      <wsdlsoap:operation soapAction="enhancedBalanceInquiry"/>
+      <wsdl:input name="enhancedBalanceInquiryRequest">
+        <wsdlsoap:body use="literal"/>
+      </wsdl:input>
+      <wsdl:output name="enhancedBalanceInquiryResponse">
+        <wsdlsoap:body use="literal"/>
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="tip">
+      <wsdlsoap:operation soapAction="tip"/>
+      <wsdl:input name="tipRequest">
+        <wsdlsoap:body use="literal"/>
+      </wsdl:input>
+      <wsdl:output name="tipResponse">
+        <wsdlsoap:body use="literal"/>
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="issueGiftCard">
+      <wsdlsoap:operation soapAction="issueGiftCard"/>
+      <wsdl:input name="issueGiftCardRequest">
+        <wsdlsoap:body use="literal"/>
+      </wsdl:input>
+      <wsdl:output name="issueGiftCardResponse">
+        <wsdlsoap:body use="literal"/>
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="merchandiseReturn">
+      <wsdlsoap:operation soapAction="merchandiseReturn"/>
+      <wsdl:input name="merchandiseReturnRequest">
+        <wsdlsoap:body use="literal"/>
+      </wsdl:input>
+      <wsdl:output name="merchandiseReturnResponse">
+        <wsdlsoap:body use="literal"/>
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="preAuth">
+      <wsdlsoap:operation soapAction="preAuth"/>
+      <wsdl:input name="preAuthRequest">
+        <wsdlsoap:body use="literal"/>
+      </wsdl:input>
+      <wsdl:output name="preAuthResponse">
+        <wsdlsoap:body use="literal"/>
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="cardActivation">
+      <wsdlsoap:operation soapAction="cardActivation"/>
+      <wsdl:input name="cardActivationRequest">
+        <wsdlsoap:body use="literal"/>
+      </wsdl:input>
+      <wsdl:output name="cardActivationResponse">
+        <wsdlsoap:body use="literal"/>
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="redemption">
+      <wsdlsoap:operation soapAction="redemption"/>
+      <wsdl:input name="redemptionRequest">
+        <wsdlsoap:body use="literal"/>
+      </wsdl:input>
+      <wsdl:output name="redemptionResponse">
+        <wsdlsoap:body use="literal"/>
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="balanceInquiry">
+      <wsdlsoap:operation soapAction="balanceInquiry"/>
+      <wsdl:input name="balanceInquiryRequest">
+        <wsdlsoap:body use="literal"/>
+      </wsdl:input>
+      <wsdl:output name="balanceInquiryResponse">
+        <wsdlsoap:body use="literal"/>
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="reversal">
+      <wsdlsoap:operation soapAction="reversal"/>
+      <wsdl:input name="reversalRequest">
+        <wsdlsoap:body use="literal"/>
+      </wsdl:input>
+      <wsdl:output name="reversalResponse">
+        <wsdlsoap:body use="literal"/>
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="preAuthPurchase">
+      <wsdlsoap:operation soapAction="preAuthPurchase"/>
+      <wsdl:input name="preAuthPurchaseRequest">
+        <wsdlsoap:body use="literal"/>
+      </wsdl:input>
+      <wsdl:output name="preAuthPurchaseResponse">
+        <wsdlsoap:body use="literal"/>
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="network">
+      <wsdlsoap:operation soapAction="network"/>
+      <wsdl:input name="networkRequest">
+        <wsdlsoap:body use="literal"/>
+      </wsdl:input>
+      <wsdl:output name="networkResponse">
+        <wsdlsoap:body use="literal"/>
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="preAuthComplete">
+      <wsdlsoap:operation soapAction="preAuthComplete"/>
+      <wsdl:input name="preAuthCompleteRequest">
+        <wsdlsoap:body use="literal"/>
+      </wsdl:input>
+      <wsdl:output name="preAuthCompleteResponse">
+        <wsdlsoap:body use="literal"/>
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="issueVirtualGiftCard">
+      <wsdlsoap:operation soapAction="issueVirtualGiftCard"/>
+      <wsdl:input name="issueVirtualGiftCardRequest">
+        <wsdlsoap:body use="literal"/>
+      </wsdl:input>
+      <wsdl:output name="issueVirtualGiftCardResponse">
+        <wsdlsoap:body use="literal"/>
+      </wsdl:output>
+    </wsdl:operation>
+  </wsdl:binding>
+  <wsdl:service name="SVSXMLWayService">
+    <wsdl:port binding="intf:SVSXMLWaySoapBinding" name="SVSXMLWay">
+      <wsdlsoap:address location="https://webservices-cert.storedvalue.com:443/svsxml/services/SVSXMLWay"/>
+    </wsdl:port>
+  </wsdl:service>
+</wsdl:definitions>

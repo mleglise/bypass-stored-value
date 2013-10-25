@@ -1,24 +1,27 @@
 module BypassStoredValue
   module Clients
     class StadisClient
-      def initialize(attrs={})
-        @protocol = attrs[:protocol]
-        @host = attrs[:host]
-        @port = attrs[:port]
-        @location_id = attrs[:location_id]
-        @vendor_id = attrs[:vendor_id]
-        @vendor_cashier = attrs[:vendor_cashier]
-        @register_id = attrs[:register_id]
-        @reference_number = attrs[:reference_number]
-        @userid = attrs[:userid]
-        @password = attrs[:password]
+      attr_accessor :client, :protocol, :host, :port, :user, :password, :reference_number, :vendor_cashier, :vendor_id, :register_id, :location_id
+
+      def initialize(user, password, args={})
+        @protocol = args[:protocol]
+        @host = args[:host]
+        @port = args[:port]
+        @vendor_cashier = args[:vendor_cashier]
+        @vendor_id = args[:vendor_id]
+        @register_id = args[:register_id]
+        @location_id = args[:location_id]
+        @reference_number = args[:reference_number]
+        @user = user
+        @password = password
+        @mock = args[:mock]
 
         client
       end
 
       def client
         @client ||= Savon.client({
-            endpoint: "#{@protocol}://#{@host}:#{@port}/StadisWeb/StadisTransactions.asmx",
+            endpoint: "#{protocol}://#{host}:#{port}/StadisWeb/StadisTransactions.asmx",
             namespace: "http://www.STADIS.com/",
             read_timeout: 5000,
             open_timeout: 360,
@@ -29,8 +32,8 @@ module BypassStoredValue
             env_namespace: :soap,
             soap_header: {
               "SecurityCredentials" => {
-                  "UserID" => @userid,
-                  "Password" => @password
+                  "UserID" => user,
+                  "Password" => password
               },
               :attributes! => {"SecurityCredentials" => {"xmlns" => "http://www.STADIS.com/"}}
             }
@@ -42,40 +45,24 @@ module BypassStoredValue
       end
 
       def balance(code)
-        response = make_request("StadisBalanceCheck", {
+        make_request("StadisBalanceCheck", {
               "StatusCheckInput" => {
                   "TransactionType" => 3,
                   "TenderTypeID" => 1,
                   "TenderID" => code,
-                  "Amount" => 0
-            }
-          }
-        )
-        handle_response(response)
+                  "Amount" => 0}})
       end
 
       def account_charge(code, amount)
-        response = make_request("StadisAccountCharge", {
-              "ChargeInput" => {
-                  "ReferenceNumber" => "byp_#{rand(10**6)}",
-                  "RegisterID" => @register_id,
-                  "VendorCashier" => @vendor_cashier,
-                  "TransactionType" => 1,
-                  "TenderTypeID" => 1,
-                  "TenderID" => code,
-                  "Amount" => amount
-              }
-          }
-        )
-        response = handle_response(response)
-        {
-            :return_code => response[:stadis_account_charge_response][:stadis_account_charge_result][:return_message][:return_code].to_i,
-            :message => response[:stadis_account_charge_response][:stadis_account_charge_result][:return_message][:message],
-            :stadis_authorization_id => response[:stadis_account_charge_response][:stadis_account_charge_result][:stadis_reply][:stadis_authorization_id],
-            :charged_amount => response[:stadis_account_charge_response][:stadis_account_charge_result][:stadis_reply][:charged_amount].to_f,
-            :remaining_amount => response[:stadis_account_charge_response][:stadis_account_charge_result][:stadis_reply][:remaining_amount].to_f,
-            :account_status_message => response[:stadis_account_charge_response][:stadis_account_charge_result][:stadis_reply][:account_status_message]
-        }
+        make_request("StadisAccountCharge", {
+            "ChargeInput" => {
+              "ReferenceNumber" => "byp_#{rand(10**6)}",
+              "RegisterID" => register_id,
+              "VendorCashier" => vendor_cashier,
+              "TransactionType" => 1,
+              "TenderTypeID" => 1,
+              "TenderID" => code,
+              "Amount" => amount}})
       end
 
       #post_transaction
@@ -101,94 +88,52 @@ module BypassStoredValue
         total = 0
         payments.each do |payment|
           tenders << {
-                "IsStadisTender" => payment.class == StadisPayment,
-                "StadisAuthorizationID" => (payment.class == StadisPayment) ? authorization_id : "",
-                "TenderTypeID" => (payment.class == StadisPayment) ? 1 : ((payment.class == CashPayment) ? 2 : 3),
-                "TenderID" => (payment.class == StadisPayment) ? code : '',
+                "IsStadisTender" => payment.class == StoredValuePayment,
+                "StadisAuthorizationID" => (payment.class == StoredValuePayment) ? authorization_id : "",
+                "TenderTypeID" => (payment.class == StoredValuePayment) ? 1 : ((payment.class == CashPayment) ? 2 : 3),
+                "TenderID" => (payment.class == StoredValuePayment) ? code : '',
                 "Amount" => payment.amount
           }
           total += payment.amount
         end if payments
 
-        response = make_request("PostTransaction", {
+        make_request("PostTransaction", {
               "Header" => {
-                  "LocationID" => @location_id,
-                  "RegisterID" => @register_id,
+                  "LocationID" => location_id,
+                  "RegisterID" => register_id,
                   "ReceiptID" => "byp_#{rand(10**6)}",
-                  "VendorID" => @vendor_id,
-                  "VendorCashier" => @vendor_cashier,
+                  "VendorID" => vendor_id,
+                  "VendorCashier" => vendor_cashier,
                   "VendorDiscountPct" => "0",
                   "VendorDiscount" => 0,
                   "VendorTax" => 0,
                   "VendorTip" => 0,
                   "SubTotal" => total,
-                  "Total" => total
-              },
+                  "Total" => total},
               "Items" => { "StadisTranItem" => items },
-              "Tenders" => { "StadisTranTender" => tenders }
-          }
-        )
-        response = handle_response(response)
-        {
-            :return_code => response[:post_transaction_response][:post_transaction_result][:return_message][:return_code].to_i,
-            :message => response[:post_transaction_response][:post_transaction_result][:return_message][:message],
-            :assigned_key => response[:post_transaction_response][:post_transaction_result][:assigned_key]
-        }
+              "Tenders" => { "StadisTranTender" => tenders }})
       end
 
       def refund(code, authorization_id, amount)
-        response = make_request("ReverseStadisAccountCharge", {
+        make_request("ReverseStadisAccountCharge", {
             "ReverseChargeInput" => {
               "ReferenceNumber" => authorization_id,
-              "RegisterID" => @register_id,
-              "VendorCashier" => @vendor_cashier,
+              "RegisterID" => register_id,
+              "VendorCashier" => vendor_cashier,
               "TransactionType" => 2,
               "TenderTypeID" => 1,
               "TenderID" => code,
-              "Amount" => amount
-            }
-          }
-        )
-        body = handle_response(response)
-        result = body[:reverse_stadis_account_charge_response][:reverse_stadis_account_charge_result]
-        {
-            :return_code => result[:return_message][:return_code],
-            :message => result[:return_message][:message],
-            :remaining_amount => result[:stadis_reply][:remaining_amount]
-        }
-      end
-
-      def account_reload(code, amount)
-        response = make_request("StadisAccountReload", {
-              "ReloadInput" => {
-                  "ReferenceNumber" => "byp_#{rand(10**6)}",
-                  "RegisterID" => @register_id,
-                  "VendorCashier" => @vendor_cashier,
-                  "TransactionType" => 3,
-                  "TenderTypeID" => 1,
-                  "TenderID" => code,
-                  "Amount" => amount
-              }
-          })
-        response = handle_response(response)
-        {
-            :return_code => response[:stadis_account_reload_response][:stadis_account_reload_result][:return_message][:return_code],
-            :message => response[:stadis_account_reload_response][:stadis_account_reload_result][:return_message][:message],
-            :remaining_amount => response[:stadis_account_reload_response][:stadis_account_reload_result][:stadis_reply][:remaining_amount]
-        }
+              "Amount" => amount}})
       end
 
       private
 
       def make_request(action, message)
-        @client.call(action,
+        return BypassStoredValue::MockResponse.new(message.values[0]) if @mock == true
+        response = client.call(action,
           soap_action: soap_action(action),
-          message: message
-          )
-      end
-
-      def handle_response(response)
-        response.body unless response.nil? || response.body.nil?
+          message: message)
+        BypassStoredValue::Response.new(response)
       end
     end
   end

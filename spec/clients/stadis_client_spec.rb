@@ -67,6 +67,7 @@ describe BypassStoredValue::Clients::StadisClient do
       it "should call Savon#call using the given action and message if not in mock mode" do
         client = BypassStoredValue::Clients::StadisClient.new("testuser", "password", {protocol: "http", host: "localhost", port: "3000"})
         response = double(body: {status_code: 0, stadis_authorization_code: '1234', charged_amount: 1.0})
+        BypassStoredValue::Response.any_instance.stub(:parse)
         Savon::Client.any_instance.should_receive(:call).with("THISISMYACTION", soap_action: client.soap_action("THISISMYACTION"), message: {message: "THISISMYMESSAGE"}).and_return(response)
         client.send(:make_request, "THISISMYACTION", {message: "THISISMYMESSAGE"})
       end
@@ -110,8 +111,9 @@ describe BypassStoredValue::Clients::StadisClient do
       it "should return a BypassStoredValue::Response object" do
         client = BypassStoredValue::Clients::StadisClient.new("testuser", "password", {protocol: "http", host: "localhost", port: "3000"})
         response = double(body: {status_code: 0})
-        Savon::Client.any_instance.should_receive(:call).with("THISISMYACTION", soap_action: client.soap_action("THISISMYACTION"), message: {message: "THISISMYMESSAGE"}).and_return(response)
-        response = client.send(:make_request, "THISISMYACTION", {message: "THISISMYMESSAGE"})
+        Savon::Client.any_instance.should_receive(:call).with("StadisAccountCharge", soap_action: client.soap_action("StadisAccountCharge"), message: {message: "THISISMYMESSAGE"}).and_return(response)
+        BypassStoredValue::Response.any_instance.stub(:parse)
+        response = client.send(:make_request, "StadisAccountCharge", {message: "THISISMYMESSAGE"})
         response.class.should == BypassStoredValue::Response
       end
     end

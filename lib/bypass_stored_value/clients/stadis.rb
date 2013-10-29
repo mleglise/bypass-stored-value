@@ -67,36 +67,8 @@ module BypassStoredValue
 
       #post_transaction
       #  takes a code, amount, authorization_id
-      def post_transaction(code, amount, authorization_id, line_items = nil, payments = nil)
-        items = []
-        line_items.each do |item|
-          items << {
-              "ItemID" => "#{item.item_id}",
-              "Description" => item.item.name,
-              "Dept" => "bypass",
-              "Class" => "bypass",
-              "SubClass" => "bypass",
-              "Quantity" => item.count,
-              "Price" => item.unit_price,
-              "Cost" => item.unit_price,
-              "Tax" => 0,
-              "AdditionalTax" => 0,
-              "Discount" => 0
-          }
-        end if line_items
-        tenders = []
-        total = 0
-        payments.each do |payment|
-          tenders << {
-                "IsStadisTender" => payment.class == StoredValuePayment,
-                "StadisAuthorizationID" => (payment.class == StoredValuePayment) ? authorization_id : "",
-                "TenderTypeID" => (payment.class == StoredValuePayment) ? 1 : ((payment.class == CashPayment) ? 2 : 3),
-                "TenderID" => (payment.class == StoredValuePayment) ? code : '',
-                "Amount" => payment.amount
-          }
-          total += payment.amount
-        end if payments
-
+      def post_transaction(line_items = nil, payments = nil)
+        request_data = set_up_transaction_request_data(line_items, payments)
         make_request("PostTransaction", {
               "Header" => {
                   "LocationID" => location_id,
@@ -108,10 +80,10 @@ module BypassStoredValue
                   "VendorDiscount" => 0,
                   "VendorTax" => 0,
                   "VendorTip" => 0,
-                  "SubTotal" => total,
-                  "Total" => total},
-              "Items" => { "StadisTranItem" => items },
-              "Tenders" => { "StadisTranTender" => tenders }})
+                  "SubTotal" => request_data[:total],
+                  "Total" => request_data[:total]},
+              "Items" => { "StadisTranItem" => request_data[:items] },
+              "Tenders" => { "StadisTranTender" => request_data[:tenders] }})
       end
 
       def refund(code, authorization_id, amount)
@@ -135,12 +107,64 @@ module BypassStoredValue
 
       private
 
+      def set_up_transaction_request_data(line_items, payments)
+        items = []
+        line_items.each do |item|
+          items << build_item_hash(item)
+        end if line_items
+
+        tenders = []
+        total = 0
+        payments.each do |payment|
+          tenders << build_payment_hash(payment)
+          total += payment.amount
+        end if payments
+
+        {items: items, tenders: tenders, total: total}
+      end
+
+      def build_payment_hash(payment)
+        {
+          "IsStadisTender" => payment.class == StoredValuePayment,
+          "StadisAuthorizationID" => (payment.class == StoredValuePayment) ? payment.authorization_id : "",
+          "TenderTypeID" => (payment.class == StoredValuePayment) ? 1 : ((payment.class == CashPayment) ? 2 : 3),
+          "TenderID" => (payment.class == StoredValuePayment) ? payment.code : '',
+          "Amount" => payment.amount
+        }
+      end
+
+      def build_item_hash(item)
+        {
+          "ItemID" => "#{item.item_id}",
+          "Description" => item.item.name,
+          "Dept" => "bypass",
+          "Quantity" => item.count,
+          "Price" => item.unit_price
+        }
+      end
+
       def make_request(action, message)
         return BypassStoredValue::MockResponse.new(message.values[0]) if @mock == true
         response = client.call(action,
           soap_action: soap_action(action),
           message: message)
-        BypassStoredValue::Response.new(response)
+        parsed_action = parse_action(action)
+        BypassStoredValue::Response.new(response, parsed_action)
+      end
+
+      def parse_action(action)
+        case action
+        when "StadisAccountCharge" 
+          "stadis_account_charge"
+        when "PostTransaction"
+          "stadis_post_transaction"
+        when "ReverseStadisAccountCharge"
+          "stadis_refund"
+        when "ReloadGiftCard"
+          "stadis_reload"
+        else 
+          "action_not_found"
+        end
       end
     end
   end

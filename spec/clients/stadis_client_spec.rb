@@ -21,6 +21,20 @@ describe BypassStoredValue::Clients::StadisClient do
       client = BypassStoredValue::Clients::StadisClient.new("testuser", "password", {protocol: "http", host: "localhost", port: "3000"})
     end
 
+    context "#reload_card" do
+      it "should call #make_request with ReloadGiftCard action and properly formatted message hash" do
+        client = BypassStoredValue::Clients::StadisClient.new("testuser", "password", {protocol: "http", host: "localhost", port: "3000", vendor_cashier: 1, register_id: 1})
+        code = '1234'
+        amount = 5.00
+        request_params = {
+          "ReloadGiftCard" => {
+            "CardID" => code,
+            "Amount" => amount}}
+        client.should_receive(:make_request).with("ReloadGiftCard", request_params)
+        client.reload_card(code, amount)
+      end
+    end
+
     context "#account_charge" do
       it "should call #make_request with StadisAccountCharge action and properly formatted message hash" do
         client = BypassStoredValue::Clients::StadisClient.new("testuser", "password", {protocol: "http", host: "localhost", port: "3000", vendor_cashier: 1, register_id: 1})

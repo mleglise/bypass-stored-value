@@ -126,6 +126,13 @@ module BypassStoredValue
               "Amount" => amount}})
       end
 
+      def reload_card(code, amount)
+        make_request("ReloadGiftCard", {
+          "ReloadGiftCard" => {
+            "CardID" => code,
+            "Amount" => amount}})
+      end
+
       private
 
       def make_request(action, message)

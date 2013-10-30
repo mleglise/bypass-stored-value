@@ -30,7 +30,7 @@ module BypassStoredValue
     end
 
     def build_stadis_post_transaction_response
-      result[:status_code] = response[:post_transaction_response][:post_transaction_result][:return_message][:return_code]
+      result[:status_code] = response[:post_transaction_response][:post_transaction_result][:return_message][:return_code].to_i
     end
 
     def build_stadis_account_charge_response

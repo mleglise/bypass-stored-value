@@ -5,5 +5,17 @@ module BypassStoredValue
         "This action is currently not implemented"
       end
     end
+
+    class NoLineItems < StandardErorr
+      def message
+        "Hash of line items is missing"
+      end
+    end
+
+    class NoPayments < StandardError
+      def message
+        "Hash of payments is missing"
+      end
+    end
   end
 end

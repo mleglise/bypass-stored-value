@@ -1,22 +1,30 @@
 module BypassStoredValue
   class MockResponse < BypassStoredValue::Response
-    def initialize(response)
-      @response = response
+    attr_reader :request
+
+    def initialize(request)
+      @request = request
       generate_successful_response
-      generate_failed_response if response['Amount'] < 0
+      generate_failed_response if failed_response_needed?
+    end
+
+    private
+
+    def failed_response_needed?
+      (request['Amount'] and request['Amount'] < 0) || (request['Total'] and request['Total'] < 0)
     end
 
     def generate_successful_response
       @result = {
         status_code: 0,
-        amount_charged: response[:amount],
+        amount_charged: request[:amount],
         authentication_token: 'STOREDVALUEMOCK'}
     end
 
     def generate_failed_response
       @result = {
         status_code: -1,
-        failed_amount: response[:amount],
+        failed_amount: request[:amount],
         authentication_token: 'STOREDVALUEMOCK'}
     end
   end

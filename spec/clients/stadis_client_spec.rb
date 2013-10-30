@@ -152,5 +152,66 @@ describe BypassStoredValue::Clients::StadisClient do
         client.refund(code, authorization_id, amount)
       end
     end
+
+    context "#build_item_hash" do
+      it "should build a request-worthy hash from the given item hash" do
+        client = BypassStoredValue::Clients::StadisClient.new("testuser", "password", {mock: true, protocol: "http", host: "localhost", port: "3000", register_id: 1, vendor_cashier: 1})
+        item_hash = {item_id: 1, item_name: 'Item1', count: 2, unit_price: 5.0}
+        hash = client.send(:build_item_hash, item_hash)
+        hash['ItemID'].should == '1'
+        hash['Description'].should == 'Item1'
+        hash['Quantity'].should == 2
+        hash['Price'].should == 5.0
+      end
+    end
+
+    context "#build_payment_hash" do
+      before do
+        @client = BypassStoredValue::Clients::StadisClient.new("testuser", "password", {mock: true, protocol: "http", host: "localhost", port: "3000", register_id: 1, vendor_cashier: 1})
+      end
+
+      it "should build a request-worthy hash from the given stadis payment hash" do
+        payment_hash = {stadis: true, transaction_id: 1, code: '1234', amount: 5.0}
+        hash = @client.send(:build_payment_hash, payment_hash)
+        hash['IsStadisTender'].should == true
+        hash['StadisAuthorizationID'].should == 1
+        hash['TenderTypeID'].should == 1
+        hash['TenderID'].should == '1234'
+        hash['Amount'].should == 5.0
+      end
+
+      it "should build a hash with appropriate contents for a cash payment" do
+        payment_hash = {stadis: false, cash: true, amount: 5.0}
+        hash = @client.send(:build_payment_hash, payment_hash)
+        hash['IsStadisTender'].should == false
+        hash['StadisAuthorizationID'].should == ''
+        hash['TenderTypeID'].should == 2
+        hash['TenderID'].should == ''
+        hash['Amount'].should == 5.0
+      end
+
+      it "should build a hash with appropriate contents for any other type of payment" do
+        payment_hash = {stadis: false, cash: false, amount: 5.0}
+        hash = @client.send(:build_payment_hash, payment_hash)
+        hash['IsStadisTender'].should == false
+        hash['StadisAuthorizationID'].should == ''
+        hash['TenderTypeID'].should == 3
+        hash['TenderID'].should == ''
+        hash['Amount'].should == 5.0
+      end
+    end
+
+    context "#post_transaction" do
+      before do
+        @client = BypassStoredValue::Clients::StadisClient.new("testuser", "password", {mock: true, protocol: "http", host: "localhost", port: "3000", register_id: 1, vendor_cashier: 1})
+        @line_items = []
+        @payments = []
+      end
+
+      it "should call #set_up_transaction_request_data" do
+        @client.should_receive(:set_up_transaction_request_data).with(@line_items, @payments).and_return({items: @line_items, tenders: @payments, total: 5.0})
+        @client.post_transaction(@line_items, @payments)
+      end
+    end
   end
 end

@@ -66,8 +66,8 @@ module BypassStoredValue
       end
 
       #post_transaction
-      #  takes a code, amount, authorization_id
-      def post_transaction(line_items = nil, payments = nil)
+      #takes an array of line items and an array of payments 
+      def post_transaction(line_items = [], payments = [])
         request_data = set_up_transaction_request_data(line_items, payments)
         make_request("PostTransaction", {
               "Header" => {
@@ -108,38 +108,44 @@ module BypassStoredValue
       private
 
       def set_up_transaction_request_data(line_items, payments)
+        raise BypassStoredValue::Exception::NoLineItems unless line_items.present?
+        raise BypassStoredValue::Exception::NoPayments unless payments.present?
         items = []
         line_items.each do |item|
           items << build_item_hash(item)
-        end if line_items
+        end
 
         tenders = []
         total = 0
         payments.each do |payment|
           tenders << build_payment_hash(payment)
           total += payment.amount
-        end if payments
+        end
 
-        {items: items, tenders: tenders, total: total}
+        {
+          items: items, 
+          tenders: tenders, 
+          total: total
+        }
       end
 
       def build_payment_hash(payment)
         {
-          "IsStadisTender" => payment.class == StoredValuePayment,
-          "StadisAuthorizationID" => (payment.class == StoredValuePayment) ? payment.authorization_id : "",
-          "TenderTypeID" => (payment.class == StoredValuePayment) ? 1 : ((payment.class == CashPayment) ? 2 : 3),
-          "TenderID" => (payment.class == StoredValuePayment) ? payment.code : '',
-          "Amount" => payment.amount
+          "IsStadisTender" => payment[:stadis] == true,
+          "StadisAuthorizationID" => (payment[:stadis] == true) ? payment[:transaction_id] : "",
+          "TenderTypeID" => (payment[:stadis] == true) ? 1 : ((payment[:cash] == true) ? 2 : 3),
+          "TenderID" => (payment[:stadis] == true) ? payment[:code] : '',
+          "Amount" => payment[:amount]
         }
       end
 
       def build_item_hash(item)
         {
-          "ItemID" => "#{item.item_id}",
-          "Description" => item.item.name,
+          "ItemID" => "#{item[:item_id]}",
+          "Description" => item[:item_name],
           "Dept" => "bypass",
-          "Quantity" => item.count,
-          "Price" => item.unit_price
+          "Quantity" => item[:count],
+          "Price" => item[:unit_price]
         }
       end
 
@@ -148,8 +154,7 @@ module BypassStoredValue
         response = client.call(action,
           soap_action: soap_action(action),
           message: message)
-        parsed_action = parse_action(action)
-        BypassStoredValue::Response.new(response, parsed_action)
+        BypassStoredValue::Response.new(response, parse_action(action))
       end
 
       def parse_action(action)

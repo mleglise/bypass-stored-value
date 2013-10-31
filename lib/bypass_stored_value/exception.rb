@@ -6,7 +6,7 @@ module BypassStoredValue
       end
     end
 
-    class NoLineItems < StandardErorr
+    class NoLineItems < StandardError
       def message
         "Hash of line items is missing"
       end

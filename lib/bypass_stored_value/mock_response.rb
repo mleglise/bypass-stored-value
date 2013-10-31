@@ -11,20 +11,20 @@ module BypassStoredValue
     private
 
     def failed_response_needed?
-      (request['Amount'] and request['Amount'] < 0) || (request['Total'] and request['Total'] < 0)
+      (request[:Amount] and request[:Amount] < 0) || (request[:Total] and request[:Total] < 0)
     end
 
     def generate_successful_response
       @result = {
         status_code: 0,
-        amount_charged: request[:amount],
+        amount_charged: request[:Amount],
         authentication_token: 'STOREDVALUEMOCK'}
     end
 
     def generate_failed_response
       @result = {
         status_code: -1,
-        failed_amount: request[:amount],
+        failed_amount: request[:Amount],
         authentication_token: 'STOREDVALUEMOCK'}
     end
   end

@@ -31,11 +31,11 @@ module BypassStoredValue
             ssl_verify_mode: :none,
             env_namespace: :soap,
             soap_header: {
-              "SecurityCredentials" => {
-                  "UserID" => user,
-                  "Password" => password
+              SecurityCredentials: {
+                  UserID: user,
+                  Password: password
               },
-              :attributes! => {"SecurityCredentials" => {"xmlns" => "http://www.STADIS.com/"}}
+              attributes!: {SecurityCredentials: {xmlns: "http://www.STADIS.com/"}}
             }
           })
       end
@@ -46,70 +46,68 @@ module BypassStoredValue
 
       def balance(code)
         make_request("StadisBalanceCheck", {
-              "StatusCheckInput" => {
-                  "TransactionType" => 3,
-                  "TenderTypeID" => 1,
-                  "TenderID" => code,
-                  "Amount" => 0}})
+              StatusCheckInput: {
+                  TransactionType: 3,
+                  TenderTypeID: 1,
+                  TenderID: code,
+                  Amount: 0}})
       end
 
       def account_charge(code, amount)
         make_request("StadisAccountCharge", {
-            "ChargeInput" => {
-              "ReferenceNumber" => "byp_#{rand(10**6)}",
-              "RegisterID" => register_id,
-              "VendorCashier" => vendor_cashier,
-              "TransactionType" => 1,
-              "TenderTypeID" => 1,
-              "TenderID" => code,
-              "Amount" => amount}})
+            ChargeInput: {
+              ReferenceNumber: "byp_#{rand(10**6)}",
+              RegisterID: register_id,
+              VendorCashier: vendor_cashier,
+              TransactionType: 1,
+              TenderTypeID: 1,
+              TenderID: code,
+              Amount: amount}})
       end
 
-      #post_transaction
-      #takes an array of line items and an array of payments 
       def post_transaction(line_items = [], payments = [])
         request_data = set_up_transaction_request_data(line_items, payments)
         make_request("PostTransaction", {
-              "Header" => {
-                  "LocationID" => location_id,
-                  "RegisterID" => register_id,
-                  "ReceiptID" => "byp_#{rand(10**6)}",
-                  "VendorID" => vendor_id,
-                  "VendorCashier" => vendor_cashier,
-                  "VendorDiscountPct" => "0",
-                  "VendorDiscount" => 0,
-                  "VendorTax" => 0,
-                  "VendorTip" => 0,
-                  "SubTotal" => request_data[:total],
-                  "Total" => request_data[:total]},
-              "Items" => { "StadisTranItem" => request_data[:items] },
-              "Tenders" => { "StadisTranTender" => request_data[:tenders] }})
+              Header: {
+                  LocationID: location_id,
+                  RegisterID: register_id,
+                  ReceiptID: "byp_#{rand(10**6)}",
+                  VendorID: vendor_id,
+                  VendorCashier: vendor_cashier,
+                  VendorDiscountPct: "0",
+                  VendorDiscount: 0,
+                  VendorTax: 0,
+                  VendorTip: 0,
+                  SubTotal: request_data[:total],
+                  Total: request_data[:total]},
+              Items: { StadisTranItem: request_data[:items] },
+              Tenders: { StadisTranTender: request_data[:tenders] }})
       end
 
       def refund(code, authorization_id, amount)
         make_request("ReverseStadisAccountCharge", {
-            "ReverseChargeInput" => {
-              "ReferenceNumber" => authorization_id,
-              "RegisterID" => register_id,
-              "VendorCashier" => vendor_cashier,
-              "TransactionType" => 2,
-              "TenderTypeID" => 1,
-              "TenderID" => code,
-              "Amount" => amount}})
+            ReverseChargeInput: {
+              ReferenceNumber: authorization_id,
+              RegisterID: register_id,
+              VendorCashier: vendor_cashier,
+              TransactionType: 2,
+              TenderTypeID: 1,
+              TenderID: code,
+              Amount: amount}})
       end
 
       def reload_card(code, amount)
         make_request("ReloadGiftCard", {
-          "ReloadGiftCard" => {
-            "CardID" => code,
-            "Amount" => amount}})
+          ReloadGiftCard: {
+            CardID: code,
+            Amount: amount}})
       end
 
       private
 
       def set_up_transaction_request_data(line_items, payments)
-        raise BypassStoredValue::Exception::NoLineItems unless line_items.present?
-        raise BypassStoredValue::Exception::NoPayments unless payments.present?
+        raise BypassStoredValue::Exception::NoLineItems if line_items.empty?
+        raise BypassStoredValue::Exception::NoPayments if payments.empty?
         items = []
         line_items.each do |item|
           items << build_item_hash(item)
@@ -119,7 +117,7 @@ module BypassStoredValue
         total = 0
         payments.each do |payment|
           tenders << build_payment_hash(payment)
-          total += payment.amount
+          total += payment[:amount]
         end
 
         {
@@ -131,21 +129,21 @@ module BypassStoredValue
 
       def build_payment_hash(payment)
         {
-          "IsStadisTender" => payment[:stadis] == true,
-          "StadisAuthorizationID" => (payment[:stadis] == true) ? payment[:transaction_id] : "",
-          "TenderTypeID" => (payment[:stadis] == true) ? 1 : ((payment[:cash] == true) ? 2 : 3),
-          "TenderID" => (payment[:stadis] == true) ? payment[:code] : '',
-          "Amount" => payment[:amount]
+          IsStadisTender: payment[:stadis] == true,
+          StadisAuthorizationID: (payment[:stadis] == true) ? payment[:transaction_id] : "",
+          TenderTypeID: (payment[:stadis] == true) ? 1 : ((payment[:cash] == true) ? 2 : 3),
+          TenderID: (payment[:stadis] == true) ? payment[:code] : '',
+          Amount: payment[:amount]
         }
       end
 
       def build_item_hash(item)
         {
-          "ItemID" => "#{item[:item_id]}",
-          "Description" => item[:item_name],
-          "Dept" => "bypass",
-          "Quantity" => item[:count],
-          "Price" => item[:unit_price]
+          ItemID: item[:item_id].to_s,
+          Description: item[:item_name],
+          Dept: "bypass",
+          Quantity: item[:count],
+          Price: item[:unit_price]
         }
       end
 

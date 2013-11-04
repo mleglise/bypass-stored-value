@@ -6,7 +6,6 @@ module BypassStoredValue
 
     def initialize(response, action)
       @response = response.body unless response.nil? || response.body.nil?
-      @result = {}
       @action = action
       parse
     end
@@ -26,32 +25,31 @@ module BypassStoredValue
     private
 
     def empty_response
-      result[:status_code] = -99
+      @result = {status_code: -99}
     end
 
     def build_stadis_post_transaction_response
-      result[:status_code] = response[:post_transaction_response][:post_transaction_result][:return_message][:return_code].to_i
+      @result = {status_code: response[:post_transaction_response][:post_transaction_result][:return_message][:return_code].to_i}
     end
 
     def build_stadis_account_charge_response
-      result[:status_code] = response[:stadis_account_charge_response][:stadis_account_charge_result][:return_message][:return_code].to_i
-      result[:authentication_token] = response[:stadis_account_charge_response][:stadis_account_charge_result][:stadis_reply][:stadis_authorization_id]
-      result[:charged_amount] = response[:stadis_account_charge_response][:stadis_account_charge_result][:stadis_reply][:charged_amount].to_f
-      result[:remaining_balance] = response[:stadis_account_charge_response][:stadis_account_charge_result][:stadis_reply][:remaining_amount].to_f
+      build_standard_stadis_result_hash(response[:stadis_account_charge_response][:stadis_account_charge_result])
     end
 
     def build_stadis_refund_response
-      result[:status_code] = response[:reverse_stadis_account_charge_response][:reverse_stadis_account_charge_result][:return_message][:return_code].to_i
-      result[:authentication_token] = response[:reverse_stadis_account_charge_response][:reverse_stadis_account_charge_result][:stadis_reply][:stadis_authorization_id]
-      result[:charged_amount] = response[:reverse_stadis_account_charge_response][:reverse_stadis_account_charge_result][:stadis_reply][:charged_amount].to_f
-      result[:remaining_balance] = response[:reverse_stadis_account_charge_response][:reverse_stadis_account_charge_result][:stadis_reply][:remaining_amount].to_f
+      build_standard_stadis_result_hash(response[:reverse_stadis_account_charge_response][:reverse_stadis_account_charge_result])
     end
 
     def build_stadis_reload_response
-      result[:status_code] = response[:reload_gift_card_response][:reload_gift_card_result][:return_message][:return_code].to_i
-      result[:authentication_token] = response[:reload_gift_card_response][:reload_gift_card_result][:stadis_reply][:stadis_authorization_id]
-      result[:charged_amount] = response[:reload_gift_card_response][:reload_gift_card_result][:stadis_reply][:charged_amount].to_f
-      result[:remaining_balance] = response[:reload_gift_card_response][:reload_gift_card_result][:stadis_reply][:remaining_amount].to_f
+      build_standard_stadis_result_hash(response[:reload_gift_card_response][:reload_gift_card_result]) 
+    end
+
+    def build_standard_stadis_result_hash(response_hash)
+      @result = {
+        status_code: response_hash[:return_message][:return_code].to_i,
+        authentication_token: response_hash[:stadis_reply][:stadis_authorization_id],
+        charged_amount: response_hash[:stadis_reply][:charged_amount].to_f,
+        remaining_balance: response_hash[:stadis_reply][:remaining_amount].to_f}
     end
   end
 end

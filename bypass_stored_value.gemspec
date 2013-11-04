@@ -6,7 +6,7 @@ require 'bypass_stored_value/version'
 Gem::Specification.new do |spec|
   spec.name          = "bypass_stored_value"
   spec.version       = BypassStoredValue::VERSION
-  spec.authors       = ["Derek Victory"]
+  spec.authors       = ["Derek Victory", "Ben Bean"]
   spec.email         = ["derek@bypassmobile.com"]
   spec.description   = %q{Gem to interface with Ceridian SVS and other stored value solutions}
   spec.summary       = %q{Connect to Stored Value Services}

@@ -24,7 +24,7 @@ module BypassStoredValue
     def generate_failed_response
       @result = {
         status_code: -1,
-        failed_amount: request[:Amount],
+        amount_charged: request[:Amount],
         authentication_token: 'STOREDVALUEMOCK'}
     end
   end

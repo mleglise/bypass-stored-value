@@ -23,6 +23,7 @@ Gem::Specification.new do |spec|
   spec.add_development_dependency 'rspec', '~> 2.14'
   spec.add_development_dependency 'awesome_print'
   spec.add_development_dependency 'webmock'
+  spec.add_development_dependency 'codeclimate-test-reporter'
 
   #Dependencies
   spec.add_dependency 'savon', '>= 2.2.0'

@@ -40,7 +40,7 @@ describe BypassStoredValue::MockResponse do
   end
 
   context "#generate_failed_response" do
-    it "should return a hash with status code -1, the amount failed, and an auth token with value 'STOREDVALUEMOCK'" do
+    it "should return a hash with status code -1, the amount charged, and an auth token with value 'STOREDVALUEMOCK'" do
       BypassStoredValue::MockResponse.new({
         ReferenceNumber: "byp_#{rand(10**6)}",
         RegisterID: 1,
@@ -48,7 +48,7 @@ describe BypassStoredValue::MockResponse do
         TransactionType: 1,
         TenderTypeID: 1,
         TenderID: '1234',
-        Amount: -2.00}).send(:generate_failed_response).should == {status_code: -1, failed_amount: -2.00, authentication_token: 'STOREDVALUEMOCK'}
+        Amount: -2.00}).send(:generate_failed_response).should == {status_code: -1, amount_charged: -2.00, authentication_token: 'STOREDVALUEMOCK'}
     end
   end
 end

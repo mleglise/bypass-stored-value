@@ -69,6 +69,11 @@ describe BypassStoredValue::Response do
       response = BypassStoredValue::Response.new(response_stub, "stadis_account_charge")
       response.successful?.should == false
     end
+
+    it "should return a stadis settle response" do
+      response = BypassStoredValue::Response.new(nil, "stadis_settle")
+      response.stadis_settle_response?.should == true
+    end
   end
 
   context "#build_stadis_reload_response" do

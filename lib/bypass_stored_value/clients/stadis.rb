@@ -85,7 +85,7 @@ module BypassStoredValue
       end
 
       def settle(code, amount)
-        #Stadis payments are settled in order batches by #post_transaction, so we do nothing here
+        BypassStoredValue::Response.new(nil, "stadis_settle")
       end
 
       def refund(code, authorization_id, amount)

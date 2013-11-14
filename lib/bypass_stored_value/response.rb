@@ -2,7 +2,7 @@ module BypassStoredValue
   class Response
     attr_accessor :response, :result, :action
 
-    ACTIONS = ["Stadis Account Charge", "Stadis Post Transaction", "Stadis Reload", "Stadis Refund", "Stadis Balance Check"]
+    ACTIONS = ["Stadis Account Charge", "Stadis Settle", "Stadis Post Transaction", "Stadis Reload", "Stadis Refund", "Stadis Balance Check"]
 
     def initialize(response, action)
       @response = response.body unless response.nil? || response.body.nil?
@@ -11,9 +11,9 @@ module BypassStoredValue
     end
 
     def parse
-      #Stadis responses only currently
-      return empty_response if response.nil?
       raise BypassStoredValue::Exception::ActionNotFound unless ACTIONS.include?(action.titleize)
+      return stadis_settle if response.nil? and action == "stadis_settle"
+      return empty_response if response.nil?
       send("build_#{action}_response")
       result
     end
@@ -22,10 +22,18 @@ module BypassStoredValue
       result[:status_code] >= 0
     end
 
+    def stadis_settle_response?
+      result[:status_code] == -1
+    end
+
     private
 
     def empty_response
       @result = {status_code: -99}
+    end
+
+    def stadis_settle
+      @result = {status_code: -1}
     end
 
     def build_stadis_post_transaction_response

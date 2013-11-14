@@ -5,7 +5,7 @@ module BypassStoredValue
         @test_mode = args.fetch(:test_mode, true)
         @user = user
         @password = password
-        namespaces = {"xmlns:ser" => "http://service.svsxml.svs.com"}
+        namespaces = {"xmlns:ser" => "https://#{server_name}/svsxml/services/SVSXMLWay"}
         @savon_client = Savon.client({
           wsdl: wsdl,
           namespaces: namespaces,
@@ -14,20 +14,21 @@ module BypassStoredValue
           wsse_auth: [@user, @password],
           pretty_print_xml: true
         })
-
       end
 
       def get_balance
-
-        response = @savon_client.call(:balance_inquiry)
+        response = @savon_client.call(:balance_inquiry_request)
       end
 
       private
 
-        def wsdl
-          @test_mode ? File.join(BypassStoredValue.root, 'wsdls', 'ceridian_test.wsdl.xml') : File.join(BypassStoredValue.root, 'wsdls', 'ceridian_production.wsdl.xml')
-        end
+      def wsdl
+        @test_mode ? File.join(BypassStoredValue.root, 'wsdls', 'ceridian_test.wsdl.xml') : File.join(BypassStoredValue.root, 'wsdls', 'ceridian_production.wsdl.xml')
+      end
 
+      def server_name
+        @test_mode ? "webservices-cert.storedvalue.com" : "webservices.storedvalue.com"
+      end
 
     end
   end

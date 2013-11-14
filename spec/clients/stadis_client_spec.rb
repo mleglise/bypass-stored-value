@@ -21,6 +21,14 @@ describe BypassStoredValue::Clients::StadisClient do
       client = BypassStoredValue::Clients::StadisClient.new("testuser", "password", {protocol: "http", host: "localhost", port: "3000"})
     end
 
+    context "#settle" do
+      it "should build a BypassStoredValue::Response object with nil response and stadis_settle action" do
+        client = BypassStoredValue::Clients::StadisClient.new("testuser", "password", {protocol: "http", host: "localhost", port: "3000", vendor_cashier: 1, register_id: 1})
+        BypassStoredValue::Response.should_receive(:new).with(nil, "stadis_settle")
+        client.settle('1234', 2.50)
+      end
+    end
+
     context "#reload_card" do
       it "should call #make_request with ReloadGiftCard action and properly formatted message hash" do
         client = BypassStoredValue::Clients::StadisClient.new("testuser", "password", {protocol: "http", host: "localhost", port: "3000", vendor_cashier: 1, register_id: 1})

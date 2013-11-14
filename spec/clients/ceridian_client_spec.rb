@@ -11,13 +11,12 @@ describe BypassStoredValue::Clients::CeridianClient do
 
   describe "actions" do
     it 'can handle balance inquiry' do
-      stub_request(:post, "https://webservices-cert.storedvalue.com/svsxml/services/SVSXMLWay")
-      .with(:body => /(...)/)
-      .to_return(:body => fixture("response/balance_inquiry.xml"))
+      #stub_request(:post, "https://webservices-cert.storedvalue.com/svsxml/services/SVSXMLWay")
+      #.with(:body => /(...)/)
+      #.to_return(:body => fixture("response/balance_inquiry.xml"))
 
-      client = BypassStoredValue::Clients::CeridianClient.new "me", "letmein"
-      response = client.get_balance
-
+      #client = BypassStoredValue::Clients::CeridianClient.new "me", "letmein"
+      #response = client.get_balance
     end
   end
 end

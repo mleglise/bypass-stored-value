@@ -35,7 +35,7 @@ describe BypassStoredValue::Clients::StadisClient do
       end
     end
 
-    context "#account_charge" do
+    context "#authorize" do
       it "should call #make_request with StadisAccountCharge action and properly formatted message hash" do
         client = BypassStoredValue::Clients::StadisClient.new("testuser", "password", {protocol: "http", host: "localhost", port: "3000", vendor_cashier: 1, register_id: 1})
         code = "1234"
@@ -53,7 +53,7 @@ describe BypassStoredValue::Clients::StadisClient do
             Amount: amount}}
         response = double(body: {status_code: 0, amount_charged: 2.00, authorization_token: '12345'})
         client.should_receive(:make_request).with("StadisAccountCharge", request_params).and_return(response)
-        client.account_charge(code, amount)
+        client.authorize(code, amount)
       end
     end
 

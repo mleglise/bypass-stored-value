@@ -53,7 +53,7 @@ module BypassStoredValue
                   Amount: 0}})
       end
 
-      def account_charge(code, amount)
+      def authorize(code, amount)
         make_request("StadisAccountCharge", {
             ChargeInput: {
               ReferenceNumber: "byp_#{rand(10**6)}",
@@ -82,6 +82,10 @@ module BypassStoredValue
                   Total: request_data[:total]},
               Items: { StadisTranItem: request_data[:items] },
               Tenders: { StadisTranTender: request_data[:tenders] }})
+      end
+
+      def settle(code, amount)
+        #Stadis payments are settled in order batches by #post_transaction, so we do nothing here
       end
 
       def refund(code, authorization_id, amount)

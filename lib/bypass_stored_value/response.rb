@@ -2,7 +2,7 @@ module BypassStoredValue
   class Response
     attr_accessor :response, :result, :action
 
-    ACTIONS = ["Stadis Account Charge", "Stadis Post Transaction", "Stadis Reload", "Stadis Refund"]
+    ACTIONS = ["Stadis Account Charge", "Stadis Post Transaction", "Stadis Reload", "Stadis Refund", "Stadis Balance Check"]
 
     def initialize(response, action)
       @response = response.body unless response.nil? || response.body.nil?
@@ -34,6 +34,10 @@ module BypassStoredValue
 
     def build_stadis_account_charge_response
       build_standard_stadis_result_hash(response[:stadis_account_charge_response][:stadis_account_charge_result])
+    end
+
+    def build_stadis_balance_check_response
+      build_standard_stadis_result_hash(response[:stadis_balance_check_response][:stadis_balance_check_result])
     end
 
     def build_stadis_refund_response

@@ -57,22 +57,10 @@ describe BypassStoredValue::Response do
     it "should raise an error if given action is not in ACTIONS constant" do
       expect{ BypassStoredValue::Response.new(@charge_response, "unavailable_action") }.to raise_error(BypassStoredValue::Exception::ActionNotFound)
     end
-
-    it "should return an empty response if it receives a blank response from the server" do
-      response_stub = double(body: nil)
-      BypassStoredValue::Response.any_instance.should_receive(:empty_response)
-      response = BypassStoredValue::Response.new(response_stub, "stadis_account_charge")
-    end
-
-    it "should return an unsuccessful response if it receives a blank response from the server" do
-      response_stub = double(body: nil)
-      response = BypassStoredValue::Response.new(response_stub, "stadis_account_charge")
-      response.successful?.should == false
-    end
-
-    it "should return a stadis settle response" do
+    
+    it "should return a successful response for stadis settle action" do
       response = BypassStoredValue::Response.new(nil, "stadis_settle")
-      response.stadis_settle_response?.should == true
+      response.successful?.should == true
     end
   end
 
@@ -129,11 +117,6 @@ describe BypassStoredValue::Response do
 
     it "should return false for status codes < 0" do
       response = BypassStoredValue::Response.new(@failed_response_stub, "stadis_account_charge")
-      response.successful?.should == false
-    end
-
-    it "should return false for nil responses" do
-      response = BypassStoredValue::Response.new(nil, "stadis_account_charge")
       response.successful?.should == false
     end
   end

@@ -13,7 +13,6 @@ module BypassStoredValue
     def parse
       raise BypassStoredValue::Exception::ActionNotFound unless ACTIONS.include?(action.titleize)
       return stadis_settle if response.nil? and action == "stadis_settle"
-      return empty_response if response.nil?
       send("build_#{action}_response")
       result
     end
@@ -22,18 +21,10 @@ module BypassStoredValue
       result[:status_code] >= 0
     end
 
-    def stadis_settle_response?
-      result[:status_code] == -1
-    end
-
     private
 
-    def empty_response
-      @result = {status_code: -99}
-    end
-
     def stadis_settle
-      @result = {status_code: -1}
+      @result = {status_code: 0}
     end
 
     def build_stadis_post_transaction_response

@@ -2,13 +2,13 @@ module BypassStoredValue
   module Clients
     class CeridianClient
       def initialize(user, password, args= {})
-        ssl_info = {
-          ssl_cert_file: File.join(BypassStoredValue.root, 'test.crt'),
-          ssl_cert_key_file: File.join(BypassStoredValue.root, 'testkey.key'),
-          ssl_ca_cert_file: File.join(BypassStoredValue.root, 'test.csr'),
-          ssl_verify_mode: :none,
-          ssl_version: :SSLv3
-        }
+        #ssl_info = {
+        #  ssl_cert_file: File.join(BypassStoredValue.root, 'test.crt'),
+        #  ssl_cert_key_file: File.join(BypassStoredValue.root, 'testkey.key'),
+        #  ssl_ca_cert_file: File.join(BypassStoredValue.root, 'test.csr'),
+        #  ssl_verify_mode: :none,
+        #  ssl_version: :SSLv3
+        #}
         @merchant_name = args.fetch(:merchant_name, "Palace")
         @merchant_number = args.fetch(:merchant_number, "130006")
         @store_number = args.fetch(:store_number, "1234567890")
@@ -18,10 +18,9 @@ module BypassStoredValue
         @password = password
         @savon_client = Savon.client({
           wsdl: wsdl,
-          #env_namespace: :soapenv,
           wsse_auth: [@user, @password],
           pretty_print_xml: true
-        }.merge(ssl_info))
+        })
       end
 
       def get_balance(card_number)

@@ -2,8 +2,12 @@
 <soapenv:Envelope xmlns:soapenv="http://schemas.xmlsoap.org/soap/envelope/" xmlns:soapenc="http://schemas.xmlsoap.org/soap/encoding/" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
   <soapenv:Header/>
   <soapenv:Body>
-    <p751:balanceInquiryResponse xmlns:p751="http://service.svsxml.svs.com">
-      <balanceInquiryReturn>
+    <p751:issueGiftCardResponse xmlns:p751="http://service.svsxml.svs.com">
+      <issueGiftCardReturn>
+        <approvedAmount>
+          <amount>100.0</amount>
+          <currency>USD</currency>
+        </approvedAmount>
         <authorizationCode>010000</authorizationCode>
         <balanceAmount>
           <amount>100.0</amount>
@@ -23,9 +27,9 @@
           <returnCode>01</returnCode>
           <returnDescription>Approval</returnDescription>
         </returnCode>
-        <stan>225009</stan>
+        <stan>222636</stan>
         <transactionID/>
-      </balanceInquiryReturn>
-    </p751:balanceInquiryResponse>
+      </issueGiftCardReturn>
+    </p751:issueGiftCardResponse>
   </soapenv:Body>
 </soapenv:Envelope>

@@ -9,10 +9,10 @@ module BypassStoredValue
           ssl_verify_mode: :none,
           ssl_version: :SSLv3
         }
-        @merchant_name = args.fetch(:merchant_name, "")
-        @merchant_number = args.fetch(:merchant_number, "")
-        @store_number = args.fetch(:store_number, "")
-        @division = args.fetch(:division, "")
+        @merchant_name = args.fetch(:merchant_name, "Palace")
+        @merchant_number = args.fetch(:merchant_number, "130006")
+        @store_number = args.fetch(:store_number, "1234567890")
+        @division = args.fetch(:division, "00000")
         @test_mode = args.fetch(:test_mode, true)
         @user = user
         @password = password
@@ -26,32 +26,27 @@ module BypassStoredValue
 
       def get_balance(card_number)
         response = @savon_client.call(:balance_inquiry, message: build_request(
-                {card: {
-                    card_number: card_number,
-                    card_currency: 840
-                },
+                {card: card_info(card_number),
                 amount: {
-                    amount: 0,
+                    amount: '0.00',
                     currency: 840
                 },
-                invoice_number: '1'})
+                check_for_duplicate: 'false',
+                transactionID: ''
+                })
               )
         handle_response response
       end
 
+      #missing transactionID
       def cancel(card_number, amount, pin = nil)
         response = @savon_client.call(:cancel, message: build_request(
             {
-              card: {
-                card_number: card_number,
-                card_currency: 840,
-                pin_number: pin
-             },
-             date: Time.now.strftime('%Y-%m-%dT00:00:00'),
-             invoice_number: '1',
-             transaction_amount: {
-                 amount: amount,
-                 currency: 'USD'
+              card: card_info(card_number),
+              date: Time.now.strftime('%FT%T%:z'),
+              transaction_amount: {
+                amount: amount,
+                currency: 'USD'
              }
 
             }
@@ -60,19 +55,17 @@ module BypassStoredValue
         handle_response response
       end
 
-      def redeem
+      def redeem(card_number, amount)
         response = @savon_client.call(:redemption, message: build_request(
             {
-              card: {
-                card_number: card_number,
-                card_currency: 840,
-                pin_number: pin
-             },
-             date: Time.now.strftime('%Y-%m-%dT00:00:00'),
-             invoice_number: '1',
-             transaction_id: rand(9999),
-             check_for_duplicate: 'TRUE'
-
+              card: card_info(card_number),
+              date: Time.now.strftime('%FT%T%:z'),
+              transactionID: '',
+              check_for_duplicate: 'false',
+              redemption_amount: {
+                amount: amount,
+                currency: 'USD'
+              }
             }
           )
         )
@@ -82,19 +75,13 @@ module BypassStoredValue
       def reload(card_number, amount, pin = nil)
         response = @savon_client.call(:reload, message: build_request(
             {
-              card: {
-                card_number: card_number,
-                card_currency: 840,
-                pin_number: pin
-             },
-             date: Time.now.strftime('%Y-%m-%dT00:00:00'),
-             invoice_number: '1',
-             transaction_id: rand(9999),
-             reload_amount: {
+              card: card_info(card_number),
+              transactionID: '',
+              reload_amount: {
                  amount: amount,
                  currency: 'USD'
-             }
-
+             },
+             check_for_duplicate: 'false'
             }
           )
         )
@@ -104,20 +91,13 @@ module BypassStoredValue
       def tip(card_number, amount, pin = nil)
         response = @savon_client.call(:tip, message: build_request(
             {
-              card: {
-                card_number: card_number,
-                card_currency: 840,
-                pin_number: pin
-             },
-             date: Time.now.strftime('%Y-%m-%dT00:00:00'),
-             invoice_number: '1',
-             transaction_id: rand(9999),
-             tip_amount: {
-                 amount: amount,
-                 currency: 'USD'
-             },
-             check_for_duplicate: 'TRUE'
-
+              card: card_info(card_number),
+              tip_amount: {
+                amount: amount,
+                currency: 'USD'
+               },
+              transactionID: '',
+              check_for_duplicate: 'false'
             }
           )
         )
@@ -127,41 +107,27 @@ module BypassStoredValue
       def reversal(card_number, amount, pin = nil)
         response = @savon_client.call(:reversal, message: build_request(
             {
-              card: {
-                card_number: card_number,
-                card_currency: 840,
-                pin_number: pin
-             },
-             date: Time.now.strftime('%Y-%m-%dT00:00:00'),
-             invoice_number: '1',
-             transaction_amount: {
-                 amount: amount,
-                 currency: 'USD'
-             }
-
+              card: card_info(card_number),
+              transaction_amount: {
+                amount: amount,
+                currency: 'USD'
+               }
             }
           )
         )
         handle_response response
       end
 
-      def issue_gift_card(card_number, amount, pin, expiration)
+      def issue_gift_card(card_number, amount, pin = '', expiration = '')
         response = @savon_client.call(:issue_gift_card, message: build_request(
             {
-              card: {
-                card_number: card_number,
-                card_currency: 840,
-                pin_number: pin,
-                card_expiration: expiration
-             },
-             date: Time.now.strftime('%Y-%m-%dT00:00:00'),
-             invoice_number: '1',
+              card: card_info(card_number),
              issue_amount: {
                  amount: amount,
                  currency: 'USD'
              },
-             check_for_duplicate: 'TRUE'
-
+             transactionID: '',
+             check_for_duplicate: 'false'
             }
           )
         )
@@ -177,6 +143,8 @@ module BypassStoredValue
 
       def handle_response(response)
         #TODO - do something with the response
+        #ap response.hash
+        response
       end
 
       def merchant_info
@@ -190,9 +158,24 @@ module BypassStoredValue
         }
       end
 
+      def card_info(card_number)
+        {
+            card_number: card_number,
+            card_currency: 840,
+            pin_number: "",
+            card_expiration: "",
+            card_track_one: "",
+            card_track_two: "",
+         }
+      end
+
       def build_request(message)
         {
           request: {
+          invoice_number: '12345678',
+          date: Time.now.strftime('%FT%T%:z'),
+          routingID: '6006492606500000000',
+          stan: Time.now.strftime('%H%M%S')
           }.merge(message).merge(merchant_info)
         }
       end

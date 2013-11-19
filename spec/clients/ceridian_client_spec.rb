@@ -28,11 +28,10 @@ describe BypassStoredValue::Clients::CeridianClient do
     #  puts response = client.issue_gift_card('6006492606749903811', 100.00, 1234, (Time.now + 365*24*60*60).strftime('%Y-%m-%dT00:00:00'))
     #end
 
-    it 'can check balance' do
-      WebMock.allow_net_connect!
-      client = BypassStoredValue::Clients::CeridianClient.new "extpalaceuat", "Pl594Ut13"
-      response = client.get_balance('6006492606749903811')
-      puts response.hash
-    end
+    #it 'can check balance' do
+    #  client = BypassStoredValue::Clients::CeridianClient.new "extpalaceuat", "Pl594Ut13"
+    #  response = client.get_balance('6006492606749903811')
+    #  puts response.hash
+    #end
   end
 end

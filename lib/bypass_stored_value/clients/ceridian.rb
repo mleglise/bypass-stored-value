@@ -39,7 +39,7 @@ module BypassStoredValue
         handle_response response
       end
 
-      def cancel(card_number, amount, pin = nil, )
+      def cancel(card_number, amount, pin = nil)
         response = @savon_client.call(:cancel, message: build_request(
             {
               card: {
@@ -208,4 +208,3 @@ module BypassStoredValue
     end
   end
 end
-

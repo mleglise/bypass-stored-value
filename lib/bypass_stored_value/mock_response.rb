@@ -1,11 +1,19 @@
 module BypassStoredValue
   class MockResponse < BypassStoredValue::Response
-    attr_reader :request
+    attr_reader :request, :transaction_id
 
     def initialize(request)
       @request = request
       generate_successful_response
       generate_failed_response if failed_response_needed?
+    end
+
+    def transaction_id
+      rand(10**6)
+    end
+
+    def message
+      "success"
     end
 
     private

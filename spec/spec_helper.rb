@@ -7,6 +7,7 @@ Bundler.setup(:default, :development)
 require 'webmock/rspec'
 require 'awesome_print'
 require 'bypass_stored_value'
+require "nori"
 
 # See http://rubydoc.info/gems/rspec-core/RSpec/Core/Configuration
 RSpec.configure do |config|
@@ -26,4 +27,19 @@ end
 
 def fixture(file)
   File.new(fixture_path + '/' + file).read
+end
+
+
+def nori
+  return @nori if @nori
+
+  nori_options = {
+    :strip_namespaces     => true,
+    :convert_tags_to      => lambda { |tag| tag.snakecase.to_sym},
+    :advanced_typecasting => true,
+    :parser               => :nokogiri
+  }
+
+  non_nil_nori_options = nori_options.reject { |_, value| value.nil? }
+  @nori = Nori.new(non_nil_nori_options)
 end

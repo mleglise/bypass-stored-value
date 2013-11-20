@@ -1,0 +1,34 @@
+<?xml version="1.0"?>
+<soapenv:Envelope xmlns:soapenv="http://schemas.xmlsoap.org/soap/envelope/" xmlns:soapenc="http://schemas.xmlsoap.org/soap/encoding/" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+  <soapenv:Header/>
+  <soapenv:Body>
+    <p751:reloadResponse xmlns:p751="http://service.svsxml.svs.com">
+      <reloadReturn>
+        <approvedAmount>
+          <amount>5.0</amount>
+          <currency>USD</currency>
+        </approvedAmount>
+        <authorizationCode>655942</authorizationCode>
+        <balanceAmount>
+          <amount>100.0</amount>
+          <currency>USD</currency>
+        </balanceAmount>
+        <card>
+          <cardCurrency>840</cardCurrency>
+          <cardNumber>6006492606749903811</cardNumber>
+          <pinNumber/>
+          <cardExpiration xsi:nil="true"/>
+          <cardTrackOne xsi:nil="true"/>
+          <cardTrackTwo xsi:nil="true"/>
+          <eovDate>20500101T0500Z</eovDate>
+        </card>
+        <conversionRate>1.000000</conversionRate>
+        <returnCode>
+          <returnCode>01</returnCode>
+          <returnDescription>Approval</returnDescription>
+        </returnCode>
+        <transactionID/>
+      </reloadReturn>
+    </p751:reloadResponse>
+  </soapenv:Body>
+</soapenv:Envelope>

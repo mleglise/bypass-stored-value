@@ -2,20 +2,20 @@
 <soapenv:Envelope xmlns:soapenv="http://schemas.xmlsoap.org/soap/envelope/" xmlns:soapenc="http://schemas.xmlsoap.org/soap/encoding/" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
   <soapenv:Header/>
   <soapenv:Body>
-    <p751:issueGiftCardResponse xmlns:p751="http://service.svsxml.svs.com">
-      <issueGiftCardReturn>
+    <p751:cancelResponse xmlns:p751="http://service.svsxml.svs.com">
+      <cancelReturn>
         <approvedAmount>
-          <amount>100.0</amount>
+          <amount>5.0</amount>
           <currency>USD</currency>
         </approvedAmount>
-        <authorizationCode>010000</authorizationCode>
+        <authorizationCode>005000</authorizationCode>
         <balanceAmount>
           <amount>100.0</amount>
           <currency>USD</currency>
         </balanceAmount>
         <card>
           <cardCurrency>840</cardCurrency>
-          <cardNumber>6006492606749903811</cardNumber>
+          <cardNumber>6006492606749903753</cardNumber>
           <pinNumber/>
           <cardExpiration xsi:nil="true"/>
           <cardTrackOne xsi:nil="true"/>
@@ -27,9 +27,8 @@
           <returnCode>01</returnCode>
           <returnDescription>Approval</returnDescription>
         </returnCode>
-        <stan>222636</stan>
-        <transactionID/>
-      </issueGiftCardReturn>
-    </p751:issueGiftCardResponse>
+        <stan>123035</stan>
+      </cancelReturn>
+    </p751:cancelResponse>
   </soapenv:Body>
 </soapenv:Envelope>

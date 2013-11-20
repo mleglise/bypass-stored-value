@@ -53,7 +53,7 @@ module BypassStoredValue
                   Amount: 0}})
       end
 
-      def authorize(code, amount)
+      def authorize(code, amount, tip = false)
         make_request("StadisAccountCharge", {
             ChargeInput: {
               ReferenceNumber: "byp_#{rand(10**6)}",
@@ -84,8 +84,8 @@ module BypassStoredValue
               Tenders: { StadisTranTender: request_data[:tenders] }})
       end
 
-      def settle(code, amount)
-        BypassStoredValue::Response.new(nil, "stadis_settle")
+      def settle(code, amount, tip = false)
+        BypassStoredValue::StadisResponse.new(nil, "stadis_settle")
       end
 
       def refund(code, authorization_id, amount)
@@ -156,7 +156,7 @@ module BypassStoredValue
         response = client.call(action,
           soap_action: soap_action(action),
           message: message)
-        BypassStoredValue::Response.new(response, parse_action(action))
+        BypassStoredValue::StadisResponse.new(response, parse_action(action))
       end
 
       def parse_action(action)

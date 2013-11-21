@@ -14,6 +14,5 @@ module BypassStoredValue
     def balance
       raise NotImplementedError
     end
-
   end
 end

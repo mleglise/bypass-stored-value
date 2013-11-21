@@ -13,7 +13,7 @@ module BypassStoredValue
     end
 
     def post_transaction(line_items = nil, amount = nil)
-      BypassStoredValue::Response.new
+      BypassStoredValue::Response.new nil, :post_transaction
     end
 
     def check_balance

@@ -23,5 +23,9 @@ module BypassStoredValue
     def reload_account(code, amount)
       raise NotImplementedError
     end
+
+    def issue
+      raise NotImplementedError
+    end
   end
 end

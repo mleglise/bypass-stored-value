@@ -66,10 +66,9 @@ describe BypassStoredValue::Clients::CeridianClient do
       stub_request(:post, "https://webservices-cert.storedvalue.com/svsxml/services/SVSXMLWay")
       .with(:body => /(...)/)
       .to_return(:body => fixture("response/ceridian/reload_response.xml"))
-      client = BypassStoredValue::Clients::CeridianClient.new "me", "letmein"
-      response = client.reload('6006492606749903803', 5.00)
-      response.hash[:envelope][:body][:reload_response][:reload_return][:approved_amount][:amount].should eql('5.0')
-
+      client = BypassStoredValue::Clients::CeridianClient.new "me", "pass"
+      response = client.card_recharge('6006492606749903811', 5.00)
+      response.hash[:envelope][:body][:card_recharge_response][:card_recharge_return][:approved_amount][:amount].should eql('5.0')
     end
 
     it 'can add a tip' do

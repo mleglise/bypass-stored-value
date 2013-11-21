@@ -33,7 +33,7 @@ module BypassStoredValue
       end
 
       def reload_account(code, amount)
-        reload(code, amount)
+        card_recharge(code, amount)
       end
 
       def check_balance(code)
@@ -48,7 +48,7 @@ module BypassStoredValue
                     currency: 840
                 },
                 check_for_duplicate: 'false',
-                transactionID: '',
+                transactionID: "#{rand(10**6)}",
                 stan: Time.now.strftime('%H%M%S'),
                 routingID: @routingID
                 })
@@ -77,7 +77,7 @@ module BypassStoredValue
             {
               card: card_info(card_number),
               date: Time.now.strftime('%FT%T%:z'),
-              transactionID: '',
+              transactionID: "#{rand(10**6)}",
               check_for_duplicate: 'false',
               redemption_amount: {
                 amount: amount,
@@ -90,15 +90,18 @@ module BypassStoredValue
         )
       end
 
-      def reload(card_number, amount)
-        make_request(:reload, card_number, amount, build_request(
+      def card_recharge(card_number, amount)
+        make_request(:card_recharge, card_number, amount, build_request(
             {
               card: card_info(card_number),
-              transactionID: '',
-              reload_amount: {
+              transactionID: "#{rand(10**6)}",
+              recharge_amount: {
                  amount: amount,
                  currency: 'USD'
-             }
+             },
+              check_for_duplicate: 'false',
+              stan: Time.now.strftime('%H%M%S'),
+              routingID: @routingID
 
             }
           )
@@ -114,7 +117,7 @@ module BypassStoredValue
                 amount: amount,
                 currency: 'USD'
                },
-              transactionID: '',
+              transactionID: "#{rand(10**6)}",
               check_for_duplicate: 'false',
               stan: Time.now.strftime('%H%M%S'),
               routingID: @routingID
@@ -133,7 +136,7 @@ module BypassStoredValue
                  amount: amount,
                  currency: 'USD'
              },
-             transactionID: '',
+             transactionID: "#{rand(10**6)}",
              check_for_duplicate: 'false',
              stan: stan,
              routingID: @routingID
@@ -151,7 +154,7 @@ module BypassStoredValue
                  amount: amount,
                  currency: 'USD'
              },
-             transactionID: '',
+             transactionID: "#{rand(10**6)}",
              check_for_duplicate: 'false',
              stan: stan,
              routingID: @routingID
@@ -168,7 +171,7 @@ module BypassStoredValue
                  amount: amount,
                  currency: 'USD'
              },
-             transactionID: '',
+             transactionID: "#{rand(10**6)}",
              check_for_duplicate: 'false',
              stan: stan,
              routingID: @routingID
@@ -191,7 +194,7 @@ module BypassStoredValue
             wsdl: wsdl,
             wsse_auth: [@user, @password],
             pretty_print_xml: true,
-            log_level: production? ? :error : :error
+            log_level: production? ? :error : :debug
           })
           @client
         end

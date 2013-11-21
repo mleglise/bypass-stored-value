@@ -28,7 +28,7 @@ module BypassStoredValue
         balance_inquiry(code)
       end
 
-      def deduct(code, transaction_id, amount)
+      def refund(code, transaction_id, amount)
         raise NotImplementedError
       end
 

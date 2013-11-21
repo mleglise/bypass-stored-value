@@ -194,7 +194,7 @@ module BypassStoredValue
             wsdl: wsdl,
             wsse_auth: [@user, @password],
             pretty_print_xml: true,
-            log_level: production? ? :error : :error
+            log_level: production? ? :error : :debug
           })
           @client
         end

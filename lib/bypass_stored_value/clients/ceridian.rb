@@ -29,7 +29,7 @@ module BypassStoredValue
       end
 
       def refund(code, transaction_id, amount)
-        raise NotImplementedError
+        cancel(code, amount, transaction_id)
       end
 
       def reload_account(code, amount)

@@ -1,0 +1,35 @@
+<?xml version="1.0"?>
+<soapenv:Envelope xmlns:soapenv="http://schemas.xmlsoap.org/soap/envelope/" xmlns:soapenc="http://schemas.xmlsoap.org/soap/encoding/" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+  <soapenv:Header/>
+  <soapenv:Body>
+    <p751:issueGiftCardResponse xmlns:p751="http://service.svsxml.svs.com">
+      <issueGiftCardReturn>
+        <approvedAmount>
+          <amount>75.0</amount>
+          <currency>USD</currency>
+        </approvedAmount>
+        <authorizationCode>010000</authorizationCode>
+        <balanceAmount>
+          <amount>75.0</amount>
+          <currency>USD</currency>
+        </balanceAmount>
+        <card>
+          <cardCurrency>840</cardCurrency>
+          <cardNumber>6006492606749903811</cardNumber>
+          <pinNumber/>
+          <cardExpiration xsi:nil="true"/>
+          <cardTrackOne xsi:nil="true"/>
+          <cardTrackTwo xsi:nil="true"/>
+          <eovDate>20500101T0500Z</eovDate>
+        </card>
+        <conversionRate>1.000000</conversionRate>
+        <returnCode>
+          <returnCode>15</returnCode>
+          <returnDescription>Shut Down</returnDescription>
+        </returnCode>
+        <stan>222636</stan>
+        <transactionID/>
+      </issueGiftCardReturn>
+    </p751:issueGiftCardResponse>
+  </soapenv:Body>
+</soapenv:Envelope>

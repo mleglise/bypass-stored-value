@@ -12,7 +12,7 @@ module BypassStoredValue
         @test_mode = args.fetch(:test_mode, true)
         @user = user
         @password = password
-        @mock = args.fetch(:mock, true)
+        @mock = args.fetch(:mock, false)
         self.options = args
       end
 
@@ -41,7 +41,7 @@ module BypassStoredValue
       end
 
       def balance_inquiry(card_number)
-        resp = make_request(:balance_inquiry, build_request(
+        resp = make_request(:balance_inquiry, card_number, 0.0, build_request(
                 {card: card_info(card_number),
                 amount: {
                     amount: '0.00',
@@ -56,7 +56,7 @@ module BypassStoredValue
       end
 
       def cancel(card_number, amount, stan)
-        make_request(:cancel, build_request(
+        make_request(:cancel, card_number, amount, build_request(
             {
               card: card_info(card_number),
               date: Time.now.strftime('%FT%T%:z'),
@@ -73,7 +73,7 @@ module BypassStoredValue
       end
 
       def redeem(card_number, amount)
-        make_request(:redemption, build_request(
+        make_request(:redemption, card_number, amount, build_request(
             {
               card: card_info(card_number),
               date: Time.now.strftime('%FT%T%:z'),
@@ -91,7 +91,7 @@ module BypassStoredValue
       end
 
       def reload(card_number, amount)
-        make_request(:reload, build_request(
+        make_request(:reload, card_number, amount, build_request(
             {
               card: card_info(card_number),
               transactionID: '',
@@ -107,7 +107,7 @@ module BypassStoredValue
       end
 
       def tip(card_number, amount)
-        make_request(:tip, build_request(
+        make_request(:tip, card_number, amount, build_request(
             {
               card: card_info(card_number),
               tip_amount: {
@@ -125,24 +125,8 @@ module BypassStoredValue
 
       end
 
-      def reversal(card_number, amount, stan)
-        make_request(:reversal, build_request(
-            {
-              card: card_info(card_number),
-              transaction_amount: {
-                amount: amount,
-                currency: 'USD'
-               },
-              routingID: @routingID,
-              stan: stan
-            }
-          )
-        )
-
-      end
-
       def issue_gift_card(card_number, amount, pin = '', expiration = '', stan)
-        make_request(:issue_gift_card, build_request(
+        make_request(:issue_gift_card, card_number, amount, build_request(
             {
               card: card_info(card_number),
              issue_amount: {
@@ -160,7 +144,7 @@ module BypassStoredValue
       end
 
       def pre_auth(card_number, amount, stan = Time.now.strftime('%H%M%S'))
-        make_request(:pre_auth, build_request(
+        make_request(:pre_auth, card_number, amount, build_request(
             {
               card: card_info(card_number),
               requested_amount: {
@@ -177,7 +161,7 @@ module BypassStoredValue
       end
 
       def pre_auth_complete(card_number, amount, stan)
-        make_request(:pre_auth, build_request(
+        make_request(:pre_auth, card_number, amount, build_request(
             {
               card: card_info(card_number),
               transaction_amount: {
@@ -207,20 +191,59 @@ module BypassStoredValue
             wsdl: wsdl,
             wsse_auth: [@user, @password],
             pretty_print_xml: true,
-            log_level: production? ? :error : :debug
+            log_level: production? ? :error : :error
           })
           @client
         end
 
-        def make_request(action, message)
+        def make_request(action, card_number, amount, message)
           return BypassStoredValue::MockResponse.new(message.values[0]) if @mock == true
-          response = client.call(action,
-            message: message)
-          handle_response response, action
+          count = 0
+          ceridian_response = nil
+
+          begin
+            response = client.call(action, message: message)
+            ceridian_response = handle_response(response, action)
+          rescue
+
+            #A timeout will come here
+          end
+
+          while (ceridian_response.nil? or ceridian_response.return_code == '15') and count < 3 do
+            ceridian_response = reversal(card_number, amount, message[:stan]) if message[:request] and message[:request][:stan]
+            count += 1
+          end
+
+          if count == 3 or ceridian_response.nil?
+            BypassStoredValue::FailedResponse.new(nil, action)
+          else
+            ceridian_response
+          end
+
         end
 
         def handle_response(response, action)
           BypassStoredValue::CeridianResponse.new(response, action)
+        end
+
+        def reversal(card_number, amount, stan)
+          response = client.call(:reversal, message: build_request(
+                                                          {
+                                                            card: card_info(card_number),
+                                                            transaction_amount: {
+                                                              amount: amount,
+                                                              currency: 'USD'
+                                                             },
+                                                            routingID: @routingID,
+                                                            stan: stan
+                                                          }
+                                                                )
+                                )
+          handle_response response, :reversal
+
+        rescue #rescue a timeout
+          return nil
+
         end
 
         def merchant_info

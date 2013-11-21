@@ -1,6 +1,6 @@
 module BypassStoredValue
   class CeridianResponse < BypassStoredValue::Response
-    attr_accessor :response, :result, :action, :message
+    attr_accessor :response, :result, :action, :message, :return_code
 
     def initialize(response, action)
       @response = response

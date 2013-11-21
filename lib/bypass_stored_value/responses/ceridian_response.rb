@@ -13,6 +13,10 @@ module BypassStoredValue
       @return_code == '01'
     end
 
+    def balance
+      @balance_amount
+    end
+
     def hash
       @response.hash
     rescue
@@ -25,6 +29,7 @@ module BypassStoredValue
       @return_code = @response.hash[:envelope][:body][:"#{action.to_s}_response"][:"#{action}_return"][:return_code][:return_code]
       @message = @response.hash[:envelope][:body][:"#{action.to_s}_response"][:"#{action}_return"][:return_code][:return_description]
       @transaction_id = @response.hash[:envelope][:body][:"#{action.to_s}_response"][:"#{action}_return"][:stan] rescue nil
+      @balance_amount = @response.hash[:envelope][:body][:"#{action.to_s}_response"][:"#{action}_return"][:balance_amount][:amount] rescue nil
     end
 
   end

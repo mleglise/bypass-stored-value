@@ -6,5 +6,9 @@ module BypassStoredValue
       true
     end
 
+    def balance
+      raise NotImplementedError
+    end
+
   end
 end

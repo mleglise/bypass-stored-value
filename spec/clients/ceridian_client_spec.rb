@@ -44,17 +44,21 @@ describe BypassStoredValue::Clients::CeridianClient do
       stub_request(:post, "https://webservices-cert.storedvalue.com/svsxml/services/SVSXMLWay")
       .with(:body => /(...)/)
       .to_return(:body => fixture("response/ceridian/issue_gift_card_response.xml"))
+
       client = BypassStoredValue::Clients::CeridianClient.new "extpalaceuat", "Pl594Ut13"
-      response = client.issue_gift_card('6006492606749903811', 75.00, Time.now.strftime('%H%M%S'))
+      response = client.issue_gift_card('6006492606749900007', 75.00, Time.now.strftime('%H%M%S'))
       response.hash[:envelope][:body][:issue_gift_card_response][:issue_gift_card_return][:approved_amount][:amount].should eql('75.0')
+      stan = response.hash[:envelope][:body][:issue_gift_card_response][:issue_gift_card_return][:stan]
+
     end
+
 
     it 'can redeem funds' do
       stub_request(:post, "https://webservices-cert.storedvalue.com/svsxml/services/SVSXMLWay")
       .with(:body => /(...)/)
       .to_return(:body => fixture("response/ceridian/redeem_response.xml"))
       client = BypassStoredValue::Clients::CeridianClient.new "extpalaceuat", "Pl594Ut13"
-      response = client.redeem('6006492606749903811', 5.00)
+      response = client.redeem('6006492606749903795', 5.00)
       response.hash[:envelope][:body][:redemption_response][:redemption_return][:approved_amount][:amount].should eql('5.0')
     end
 
@@ -63,7 +67,7 @@ describe BypassStoredValue::Clients::CeridianClient do
       .with(:body => /(...)/)
       .to_return(:body => fixture("response/ceridian/reload_response.xml"))
       client = BypassStoredValue::Clients::CeridianClient.new "extpalaceuat", "Pl594Ut13"
-      response = client.reload('6006492606749903811', 5.00)
+      response = client.reload('6006492606749903803', 5.00)
       response.hash[:envelope][:body][:reload_response][:reload_return][:approved_amount][:amount].should eql('5.0')
 
     end
@@ -166,7 +170,7 @@ describe BypassStoredValue::Clients::CeridianClient do
 
       client = BypassStoredValue::Clients::CeridianClient.new "extpalaceuat", "Pl594Ut13"
 
-      response = client.issue_gift_card('6006492606749903787', 75.00, Time.now.strftime('%H%M%S'))
+      response = client.issue_gift_card('re', 75.00, Time.now.strftime('%H%M%S'))
       response.hash[:envelope][:body][:issue_gift_card_response][:issue_gift_card_return][:approved_amount][:amount].should eql('75.0')
       stan = response.hash[:envelope][:body][:issue_gift_card_response][:issue_gift_card_return][:stan]
 

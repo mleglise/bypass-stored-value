@@ -15,5 +15,13 @@ module BypassStoredValue
     def post_transaction(line_items = nil, amount = nil)
       BypassStoredValue::Response.new
     end
+
+    def check_balance
+      raise NotImplementedError
+    end
+
+    def reload_account(code, amount)
+      raise NotImplementedError
+    end
   end
 end

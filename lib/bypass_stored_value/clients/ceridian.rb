@@ -12,11 +12,12 @@ module BypassStoredValue
         @test_mode = args.fetch(:test_mode, true)
         @user = user
         @password = password
+        @mock = args.fetch(:mock, true)
         self.options = args
       end
 
-      def settle(code, amount, tip)
-        if tip?
+      def settle(code, amount, tip = false)
+        if tip
           tip(code, amount)
         else
           redeem(code,amount)
@@ -24,11 +25,19 @@ module BypassStoredValue
       end
 
       def authorize(code, amount, tip)
-        client.get_balance(code)
+        client.balance_inquiry(code)
       end
 
       def deduct(code, transaction_id, amount)
         raise NotImplementedError
+      end
+
+      def reload_account(code, amount)
+        client.reload(code, amount)
+      end
+
+      def check_balance(code)
+        client.balance_inquiry(code)
       end
 
       def balance_inquiry(card_number)
@@ -198,7 +207,7 @@ module BypassStoredValue
             wsdl: wsdl,
             wsse_auth: [@user, @password],
             pretty_print_xml: true,
-            log_level: production? ? :error : :error
+            log_level: production? ? :error : :debug
           })
           @client
         end

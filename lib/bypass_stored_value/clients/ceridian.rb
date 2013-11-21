@@ -25,7 +25,7 @@ module BypassStoredValue
       end
 
       def authorize(code, amount, tip)
-        client.balance_inquiry(code)
+        balance_inquiry(code)
       end
 
       def deduct(code, transaction_id, amount)
@@ -33,11 +33,11 @@ module BypassStoredValue
       end
 
       def reload_account(code, amount)
-        client.reload(code, amount)
+        reload(code, amount)
       end
 
       def check_balance(code)
-        client.balance_inquiry(code)
+        balance_inquiry(code)
       end
 
       def balance_inquiry(card_number)

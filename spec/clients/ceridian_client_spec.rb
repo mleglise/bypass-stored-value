@@ -44,12 +44,10 @@ describe BypassStoredValue::Clients::CeridianClient do
       stub_request(:post, "https://webservices-cert.storedvalue.com/svsxml/services/SVSXMLWay")
       .with(:body => /(...)/)
       .to_return(:body => fixture("response/ceridian/issue_gift_card_response.xml"))
-
       client = BypassStoredValue::Clients::CeridianClient.new "me", "letmein"
-      response = client.issue_gift_card('6006492606749900007', 75.00, Time.now.strftime('%H%M%S'))
+      response = client.issue_gift_card('6006492606749903720', 500.00, Time.now.strftime('%H%M%S'))
       response.hash[:envelope][:body][:issue_gift_card_response][:issue_gift_card_return][:approved_amount][:amount].should eql('75.0')
       stan = response.hash[:envelope][:body][:issue_gift_card_response][:issue_gift_card_return][:stan]
-
     end
 
 
@@ -190,5 +188,13 @@ describe BypassStoredValue::Clients::CeridianClient do
       response = client.issue_gift_card('6006492606749903787', 75.00, Time.now.strftime('%H%M%S'))
       expect(response).to be_an_instance_of(BypassStoredValue::FailedResponse)
     end
+
+    xit 'should handle failed login' do
+      client = BypassStoredValue::Clients::CeridianClient.new "me", "letmein"
+      response = client.balance_inquiry('6006492606749903753')
+      expect(response).to be_an_instance_of(BypassStoredValue::FailedResponse)
+      response.message.should eql('Trouble taking to service.')
+    end
+
   end
 end

@@ -194,7 +194,7 @@ module BypassStoredValue
             wsdl: wsdl,
             wsse_auth: [@user, @password],
             pretty_print_xml: true,
-            log_level: production? ? :error : :debug
+            log_level: production? ? :error : :error
           })
           @client
         end
@@ -218,7 +218,7 @@ module BypassStoredValue
           end
 
           if count == 3 or ceridian_response.nil?
-            BypassStoredValue::FailedResponse.new(nil, action)
+            BypassStoredValue::FailedResponse.new(nil, action, "Trouble taking to service.")
           else
             ceridian_response
           end

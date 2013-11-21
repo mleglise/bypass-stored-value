@@ -21,6 +21,14 @@ module BypassStoredValue
       result[:status_code] >= 0
     end
 
+    def transaction_id
+      result[:authentication_token]
+    end
+
+    def refunded_amount
+      result[:charged_amount] if action == "stadis_refund"
+    end
+
     private
 
     def stadis_settle

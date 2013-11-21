@@ -14,6 +14,38 @@ describe BypassStoredValue::StadisResponse do
     BypassStoredValue::StadisResponse.new(response_stub, "stadis_account_charge")
   end
 
+  context "#transaction_id" do
+    it "should return the result's authentication token" do
+      refund_response = double(body: {
+        reverse_stadis_account_charge_response: {
+          reverse_stadis_account_charge_result: {
+            return_message: {
+              return_code: 0},
+            stadis_reply: {
+              stadis_authorization_id: '1234',
+              charged_amount: -1.00,
+              remaining_amount: 1.00}}}})
+      response = BypassStoredValue::StadisResponse.new(refund_response, "stadis_refund")
+      response.transaction_id.should == "1234"
+    end
+  end
+
+  context "refunded_amount" do
+    it "should return the result charged amount if the action is stadis_refund" do
+      refund_response = double(body: {
+        reverse_stadis_account_charge_response: {
+          reverse_stadis_account_charge_result: {
+            return_message: {
+              return_code: 0},
+            stadis_reply: {
+              stadis_authorization_id: '1234',
+              charged_amount: -1.00,
+              remaining_amount: 1.00}}}})
+      response = BypassStoredValue::StadisResponse.new(refund_response, "stadis_refund")
+      response.refunded_amount.should == -1.00
+    end
+  end
+
   context "#parse" do
     before do
       @charge_response = double(body: {

@@ -213,7 +213,7 @@ module BypassStoredValue
           end
 
           while (ceridian_response.nil? or ceridian_response.return_code == '15') and count < 3 do
-            ceridian_response = reversal(card_number, amount, message[:stan]) if message[:request] and message[:request][:stan]
+            ceridian_response = reversal(card_number, amount, message[:request][:stan]) if message[:request] and message[:request][:stan]
             count += 1
           end
 

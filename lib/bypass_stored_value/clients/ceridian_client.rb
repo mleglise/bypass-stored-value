@@ -40,6 +40,10 @@ module BypassStoredValue
         balance_inquiry(code)
       end
 
+      def issue(code, amount)
+        issue_gift_card code, amount
+      end
+
       def balance_inquiry(card_number)
         resp = make_request(:balance_inquiry, card_number, 0.0, build_request(
                 {card: card_info(card_number),
@@ -56,20 +60,32 @@ module BypassStoredValue
       end
 
       def cancel(card_number, amount, stan)
-        make_request(:cancel, card_number, amount, build_request(
-            {
-              card: card_info(card_number),
-              date: Time.now.strftime('%FT%T%:z'),
-              transaction_amount: {
-                amount: amount,
-                currency: 'USD'
-             },
-              stan: stan,
-              routingID: @routingID
+        count = 0
+        ceridian_response = nil
 
-            }
+        while (ceridian_response.nil? or ceridian_response.return_code == '15') and count < 3 do
+          ceridian_response = make_request(:cancel, card_number, amount, build_request(
+              {
+                card: card_info(card_number),
+                date: Time.now.strftime('%FT%T%:z'),
+                transaction_amount: {
+                  amount: amount,
+                  currency: 'USD'
+               },
+                stan: stan,
+                routingID: @routingID
+
+              }
+            )
           )
-        )
+          count += 1
+        end
+
+        if count == 3 or ceridian_response.nil?
+          BypassStoredValue::FailedResponse.new(nil, :cancel, "Trouble taking to service.")
+        else
+          ceridian_response
+        end
       end
 
       def redeem(card_number, amount)
@@ -128,7 +144,7 @@ module BypassStoredValue
 
       end
 
-      def issue_gift_card(card_number, amount, pin = '', expiration = '', stan)
+      def issue_gift_card(card_number, amount, pin = '', expiration = '', stan = Time.now.strftime('%H%M%S'))
         make_request(:issue_gift_card, card_number, amount, build_request(
             {
               card: card_info(card_number),
@@ -208,16 +224,15 @@ module BypassStoredValue
             response = client.call(action, message: message)
             ceridian_response = handle_response(response, action)
           rescue
-
             #A timeout will come here
           end
 
-          while (ceridian_response.nil? or ceridian_response.return_code == '15') and count < 3 do
+          while (ceridian_response.nil? or ceridian_response.return_code == '15') and count < 3 and action != :cancel and action != :balance_inquiry do        #don't do reversals for cancels
             ceridian_response = reversal(card_number, amount, message[:request][:stan]) if message[:request] and message[:request][:stan]
             count += 1
           end
 
-          if count == 3 or ceridian_response.nil?
+          if (count == 3 or ceridian_response.nil?) and action != :cancel and action != :balance_inquiry
             BypassStoredValue::FailedResponse.new(nil, action, "Trouble taking to service.")
           else
             ceridian_response

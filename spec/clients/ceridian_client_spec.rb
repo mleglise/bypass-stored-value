@@ -209,5 +209,11 @@ describe BypassStoredValue::Clients::CeridianClient do
       client.cancel('6006492606749903787', 75.00, Time.now.strftime('%H%M%S'))
 
     end
+
+    it 'should return an object that response to successful for authorize' do
+      client = BypassStoredValue::Clients::CeridianClient.new "me", "letmein"
+      resp = client.authorize("asdfsaf", 500, 0)
+      resp.successful?.should be_true
+    end
   end
 end

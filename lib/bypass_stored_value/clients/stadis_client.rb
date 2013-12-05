@@ -23,6 +23,7 @@ module BypassStoredValue
         @client ||= Savon.client({
             endpoint: "#{protocol}://#{host}:#{port}/StadisWeb/StadisTransactions.asmx",
             namespace: "http://www.STADIS.com/",
+            convert_request_keys_to: :none,
             read_timeout: 5000,
             open_timeout: 360,
             element_form_default: :unqualified,

@@ -174,7 +174,7 @@ module BypassStoredValue
         when "ReloadGiftCard"
           "stadis_reload"
         when "StadisBalanceCheck"
-          "balance_check"
+          "stadis_balance_check"
         else 
           "action_not_found"
         end

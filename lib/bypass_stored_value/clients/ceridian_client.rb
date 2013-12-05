@@ -26,7 +26,7 @@ module BypassStoredValue
 
       def authorize(code, amount, tip)
         #balance_inquiry(code)  #This is really slow, and anywhere would time out, so setting to true at this time, anywhere check balance as it is.
-        Struct.new(:successful?).new true
+        BypassStoredValue::CeridianResponse.new({}, :authorize, true)
       end
 
       def refund(code, transaction_id, amount)

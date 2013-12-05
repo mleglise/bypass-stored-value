@@ -2,11 +2,18 @@ module BypassStoredValue
   class CeridianResponse < BypassStoredValue::Response
     attr_accessor :response, :result, :action, :message, :return_code
 
-    def initialize(response, action)
+    def initialize(response, action, return_successful = false)
       @response = response
       @action = action
 
-      parse_action(action)
+      if return_successful
+        @return_code = '01'
+        @balance_amount = '0'
+        @message = 'Approved'
+      else
+        parse_action(action)
+      end
+
     end
 
     def successful?

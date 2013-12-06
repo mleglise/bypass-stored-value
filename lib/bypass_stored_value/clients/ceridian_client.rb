@@ -224,8 +224,9 @@ module BypassStoredValue
           begin
             response = client.call(action, message: message)
             ceridian_response = handle_response(response, action)
-          rescue
+          rescue Exception => e
             #A timeout will come here
+            puts e
           end
 
           while (ceridian_response.nil? or ceridian_response.return_code == '15') and count < 3 and action != :cancel and action != :balance_inquiry do        #don't do reversals for cancels
@@ -233,7 +234,7 @@ module BypassStoredValue
             count += 1
           end
 
-          if (count == 3 or ceridian_response.nil?) and action != :cancel and action != :balance_inquiry
+          if (count == 3 or ceridian_response.nil?) and action != :cancel
             BypassStoredValue::FailedResponse.new(nil, action, "Trouble taking to service.")
           else
             ceridian_response

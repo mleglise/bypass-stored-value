@@ -51,9 +51,6 @@ module BypassStoredValue
                   TransactionType: 3,
                   TenderTypeID: 1,
                   TenderID: code,
-                  RegisterID: 'N/A',
-                  VendorCashier: 'N/A',
-                  ReferenceNumber: "N/A",
                   Amount: 0}})
       end
 

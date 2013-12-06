@@ -224,7 +224,7 @@ module BypassStoredValue
           begin
             response = client.call(action, message: message)
             ceridian_response = handle_response(response, action)
-          rescue Exception => e
+          rescue => e
             #A timeout will come here
             puts e
           end

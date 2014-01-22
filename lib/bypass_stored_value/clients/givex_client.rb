@@ -18,7 +18,7 @@ module BypassStoredValue
       end
 
       def authorize(card_number, amount, tip = false)
-        BypassStoredValue::GivexResponse.new({}, :authorize, true)
+        BypassStoredValue::GivexResponse.new({}, 'dc_920', true)
       end
 
       def post_transaction(line_items = nil, amount = nil)
@@ -94,8 +94,8 @@ module BypassStoredValue
           response = client.post("/", data.to_json)
           handle_response(response, method)
 
-          #rescue
-          #  BypassStoredValue::FailedResponse.new(nil, action, "Trouble talking to service.")
+        rescue
+          BypassStoredValue::FailedResponse.new(nil, action, "Trouble talking to service.")
         end
 
         def client

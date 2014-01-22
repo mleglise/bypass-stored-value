@@ -70,5 +70,10 @@ describe BypassStoredValue::Clients::GivexClient do
     response.transaction_id.should eql('sometrans')
   end
 
+  it 'returns a successful authorization' do
+    response = @client.authorize('603628835492000059280', 100, false)
+    response.successful?.should be_true
+  end
+
 
 end

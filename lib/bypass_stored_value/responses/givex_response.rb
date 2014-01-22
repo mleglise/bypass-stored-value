@@ -6,16 +6,14 @@ module BypassStoredValue
     def initialize(response, method, return_successful = false)
       @response = response
       @action = method
+      @return_successful = return_successful
 
-      if return_successful
-
-      else
-        parse_response(response, method)
-      end
+      parse_response(response, method) unless return_successful
     end
 
     def successful?
-      @result[1] == '0'
+      return true if @return_successful
+      @result[1] == '0' rescue false
     end
 
     private
@@ -31,11 +29,11 @@ module BypassStoredValue
             when 'dc_901', 'dc_906', 'dc_907', 'dc_908'
               parse_balance_from_transaction(@result)
           end
-
-          @transaction_id = @result[0]
         else
-          @error = "Error #{@result[1]} : #{@result[2]}"
+          @message = "Error #{@result[1]} : #{@result[2]}"
         end
+
+        @transaction_id = @result[0] rescue nil
       end
 
       def parse_balance_inquiry(result)

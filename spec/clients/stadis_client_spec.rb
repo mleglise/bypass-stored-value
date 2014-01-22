@@ -1,6 +1,18 @@
 require 'spec_helper'
 
 describe BypassStoredValue::Clients::StadisClient do
+
+  describe 'stored value interface' do
+    it 'should implement all public methods' do
+      client = BypassStoredValue::Clients::StadisClient.new "me", "letmein"
+      client.respond_to?(:settle).should be_true
+      client.respond_to?(:refund).should be_true
+      client.respond_to?(:authorize).should be_true
+      client.respond_to?(:post_transaction).should be_true
+    end
+
+  end
+
   context "An instance of the Stadis::Client class" do
     it "adds credentials in soap header" do
       Savon.should_receive(:client).with(endpoint: "http://localhost:3000/StadisWeb/StadisTransactions.asmx",

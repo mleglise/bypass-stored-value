@@ -8,10 +8,6 @@ module BypassStoredValue
       raise NotImplementedError
     end
 
-    def deduct(code, transaction_id, amount)
-      raise NotImplementedError
-    end
-
     def post_transaction(line_items = nil, amount = nil)
       BypassStoredValue::Response.new nil, :post_transaction
     end
@@ -24,8 +20,13 @@ module BypassStoredValue
       raise NotImplementedError
     end
 
-    def issue
+    def issue(code, amount)
       raise NotImplementedError
     end
+
+    def refund(code, transaction_id, amount, original_amount)
+      raise NotImplementedError
+    end
+
   end
 end

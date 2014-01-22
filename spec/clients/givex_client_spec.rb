@@ -4,7 +4,6 @@ describe BypassStoredValue::Clients::GivexClient do
 
   before(:all) do
     #WebMock.allow_net_connect!
-    WebMock.disable_net_connect!
     @client = BypassStoredValue::Clients::GivexClient.new('29106', '1193')
   end
   after(:all) do
@@ -27,8 +26,7 @@ describe BypassStoredValue::Clients::GivexClient do
     stub_request(:post, "https://29106:1193@dev-dataconnect.givex.com:50101/")
       .with(:body => /(...)/)
       .to_return(:body => fixture("response/givex/balance_check.json"))
-    response = @client.check_balance '6036285698895779763'
-    #response = @client.check_balance '603628346332000059304' #has $100
+    response = @client.check_balance '603628567891029892783'
     response.balance.should eql(100.0)
   end
 
@@ -44,14 +42,14 @@ describe BypassStoredValue::Clients::GivexClient do
     stub_request(:post, "https://29106:1193@dev-dataconnect.givex.com:50101/")
       .with(:body => /(...)/)
       .to_return(:body => fixture("response/givex/sucessful_transaction.json"))
-    response = @client.issue('603628567891029892783', 100)
+    response = @client.issue('603628567891029892783', 500)
   end
 
   it 'can deduct $10' do
     stub_request(:post, "https://29106:1193@dev-dataconnect.givex.com:50101/")
       .with(:body => /(...)/)
       .to_return(:body => fixture("response/givex/sucessful_transaction.json"))
-    response = @client.settle('603628346332000059304', 'sometrans', 10)
+    response = @client.settle('603628567891029892783', 10, false)
     response.successful?.should be_true
   end
 
@@ -67,9 +65,10 @@ describe BypassStoredValue::Clients::GivexClient do
     stub_request(:post, "https://29106:1193@dev-dataconnect.givex.com:50101/")
       .with(:body => /(...)/)
       .to_return(:body => fixture("response/givex/sucessful_transaction.json"))
-    response = @client.refund('603628835492000059280', 'sometranscode', 100)
+    response = @client.refund('603628835492000059280', 'sometrans', 100)
     response.successful?.should be_true
     response.transaction_id.should eql('sometrans')
   end
+
 
 end

@@ -13,11 +13,11 @@ module BypassStoredValue
         @mock = args.fetch(:mock, false)
       end
 
-      def settle(code, amount, tip = false)
-        redeem(code, amount, rand(10**12))
+      def settle(card_number, amount, tip = false)
+        redeem(card_number, amount, rand(10**12))
       end
 
-      def authorize(code, amount, tip = false)
+      def authorize(card_number, amount, tip = false)
         BypassStoredValue::GivexResponse.new({}, :authorize, true)
       end
 
@@ -25,20 +25,20 @@ module BypassStoredValue
         BypassStoredValue::Response.new nil, :post_transaction
       end
 
-      def check_balance(code)
-        get_balance(code)
+      def check_balance(card_number)
+        get_balance(card_number)
       end
       #
-      def reload_account(code, amount)
-        adjustment code, amount
+      def reload_account(card_number, amount)
+        adjustment card_number, amount
       end
       #
       def issue(card_number, amount)
         activate(card_number, amount)
       end
 
-      def refund(code, transaction_code, amount)
-        cancel(code, amount, transaction_code)
+      def refund(card_number, transaction_code, amount)
+        cancel(card_number, amount, transaction_code)
       end
 
       #givex functions

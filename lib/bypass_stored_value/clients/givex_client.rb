@@ -50,28 +50,24 @@ module BypassStoredValue
 
       #Secure Redemption
       def redeem(card_number, amount, transaction_code)
-        params = ["en", "#{transaction_code}", @user, @password, card_number, amount.to_s]
-        make_request('dc_901', params, transaction_code)
+        make_request('dc_901', get_params(transaction_code, card_number, amount), transaction_code)
       end
 
       #Activate
       def activate(card_number, amount)
         transaction_code = "act#{card_number}"
-        params = ["en", "#{transaction_code}", @user, @password, card_number, amount]
-        make_request('dc_906', params, transaction_code)
+        make_request('dc_906', get_params(transaction_code, card_number, amount), transaction_code)
       end
 
       #Cancel
       def cancel(card_number, amount, transaction_code)
-        params = ["en", "#{transaction_code}", @user, @password, card_number, amount.to_s]
-        make_request("dc_907", params, transaction_code)
+        make_request("dc_907", get_params(transaction_code, card_number, amount), transaction_code)
       end
 
       #Adjustment
       def adjustment(card_number, amount)
         transaction_code = "adj#{card_number}#{rand(0..100)}"
-        params = ["en", "#{transaction_code}", @user, @password, card_number, amount.to_s]
-        make_request("dc_908", params, transaction_code)
+        make_request("dc_908", get_params(transaction_code, card_number, amount), transaction_code)
       end
 
       #Balance
@@ -94,8 +90,8 @@ module BypassStoredValue
           response = client.post("/", data.to_json)
           handle_response(response, method)
 
-        rescue
-          BypassStoredValue::FailedResponse.new(nil, action, "Trouble talking to service.")
+        #rescue
+        #  BypassStoredValue::FailedResponse.new(nil, method, "Trouble talking to service.")
         end
 
         def client
@@ -116,6 +112,10 @@ module BypassStoredValue
 
         def handle_response(response, method)
           BypassStoredValue::GivexResponse.new(response, method)
+        end
+
+        def get_params(transaction_code, card_number, amount)
+          ["en", "#{transaction_code}", @user, @password, card_number, amount.to_s]
         end
     end
   end

@@ -4,7 +4,7 @@ describe BypassStoredValue::Clients::GivexClient do
 
   before(:all) do
     #WebMock.allow_net_connect!
-    @client = BypassStoredValue::Clients::GivexClient.new('29106', '1193')
+    @client = BypassStoredValue::Clients::GivexClient.new('29556', '4866')
   end
   after(:all) do
     WebMock.disable_net_connect!
@@ -23,7 +23,7 @@ describe BypassStoredValue::Clients::GivexClient do
 
 
   it 'can get balance' do
-    stub_request(:post, "https://29106:1193@dev-dataconnect.givex.com:50101/")
+    stub_request(:post, "https://29556:4866@dev-dataconnect.givex.com:50101/")
       .with(:body => /(...)/)
       .to_return(:body => fixture("response/givex/balance_check.json"))
     response = @client.check_balance '603628567891029892783'
@@ -31,7 +31,7 @@ describe BypassStoredValue::Clients::GivexClient do
   end
 
   it 'can ping' do
-    stub_request(:post, "https://29106:1193@dev-dataconnect.givex.com:50101/")
+    stub_request(:post, "https://29556:4866@dev-dataconnect.givex.com:50101/")
       .with(:body => /(...)/)
       .to_return(:body => fixture("response/givex/null_response.json"))
     response = @client.ping
@@ -39,14 +39,14 @@ describe BypassStoredValue::Clients::GivexClient do
   end
 
   it 'can activate a card' do
-    stub_request(:post, "https://29106:1193@dev-dataconnect.givex.com:50101/")
+    stub_request(:post, "https://29556:4866@dev-dataconnect.givex.com:50101/")
       .with(:body => /(...)/)
       .to_return(:body => fixture("response/givex/sucessful_transaction.json"))
     response = @client.issue('603628567891029892783', 500)
   end
 
   it 'can deduct $10' do
-    stub_request(:post, "https://29106:1193@dev-dataconnect.givex.com:50101/")
+    stub_request(:post, "https://29556:4866@dev-dataconnect.givex.com:50101/")
       .with(:body => /(...)/)
       .to_return(:body => fixture("response/givex/sucessful_transaction.json"))
     response = @client.settle('603628567891029892783', 10, false)
@@ -54,7 +54,7 @@ describe BypassStoredValue::Clients::GivexClient do
   end
 
   it 'can add funds to an account' do
-    stub_request(:post, "https://29106:1193@dev-dataconnect.givex.com:50101/")
+    stub_request(:post, "https://29556:4866@dev-dataconnect.givex.com:50101/")
       .with(:body => /(...)/)
       .to_return(:body => fixture("response/givex/sucessful_transaction.json"))
     response = @client.reload_account('603628835492000059280', 100)
@@ -62,7 +62,7 @@ describe BypassStoredValue::Clients::GivexClient do
   end
 
   it 'should be able to cancel a transaction' do
-    stub_request(:post, "https://29106:1193@dev-dataconnect.givex.com:50101/")
+    stub_request(:post, "https://29556:4866@dev-dataconnect.givex.com:50101/")
       .with(:body => /(...)/)
       .to_return(:body => fixture("response/givex/sucessful_transaction.json"))
     response = @client.refund('603628835492000059280', 'sometrans', 100)

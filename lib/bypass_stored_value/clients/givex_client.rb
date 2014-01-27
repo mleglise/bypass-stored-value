@@ -14,7 +14,7 @@ module BypassStoredValue
       end
 
       def settle(card_number, amount, tip = false)
-        redeem(card_number, amount, rand(10**12))
+        redeem(card_number, amount)
       end
 
       def authorize(card_number, amount, tip = false)
@@ -49,7 +49,8 @@ module BypassStoredValue
       end
 
       #Secure Redemption
-      def redeem(card_number, amount, transaction_code)
+      def redeem(card_number, amount)
+        transaction_code =  "red#{rand(10**12)}"
         make_request('dc_901', get_params(transaction_code, card_number, amount), transaction_code)
       end
 
@@ -61,7 +62,7 @@ module BypassStoredValue
 
       #Activate
       def increment(card_number, amount)
-        transaction_code = "inc#{card_number}"
+        transaction_code = "inc#{card_number}#{rand(0..100)}"
         make_request('dc_905', get_params(transaction_code, card_number, amount), transaction_code)
       end
 

@@ -26,7 +26,7 @@ module BypassStoredValue
           case method
             when 'dc_909'
               parse_balance_inquiry(@result)
-            when 'dc_901', 'dc_906', 'dc_907', 'dc_908'
+            when 'dc_901', 'dc_905', 'dc_906', 'dc_907', 'dc_908'
               parse_balance_from_transaction(@result)
           end
         else

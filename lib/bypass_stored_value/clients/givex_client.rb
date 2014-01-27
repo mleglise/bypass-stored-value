@@ -30,7 +30,7 @@ module BypassStoredValue
       end
       #
       def reload_account(card_number, amount)
-        adjustment card_number, amount
+        increment card_number, amount
       end
       #
       def issue(card_number, amount)
@@ -57,6 +57,12 @@ module BypassStoredValue
       def activate(card_number, amount)
         transaction_code = "act#{card_number}"
         make_request('dc_906', get_params(transaction_code, card_number, amount), transaction_code)
+      end
+
+      #Activate
+      def increment(card_number, amount)
+        transaction_code = "inc#{card_number}"
+        make_request('dc_905', get_params(transaction_code, card_number, amount), transaction_code)
       end
 
       #Cancel

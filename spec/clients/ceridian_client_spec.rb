@@ -13,7 +13,7 @@ describe BypassStoredValue::Clients::CeridianClient do
     it 'should implement all public methods' do
       client = BypassStoredValue::Clients::CeridianClient.new "me", "letmein"
       client.respond_to?(:settle).should be_true
-      client.respond_to?(:deduct).should be_true
+      client.respond_to?(:refund).should be_true
       client.respond_to?(:authorize).should be_true
       client.respond_to?(:post_transaction).should be_true
     end

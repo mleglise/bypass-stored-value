@@ -1,6 +1,6 @@
 module BypassStoredValue
   class Response
-    attr_accessor :response, :result, :action, :transaction_id
+    attr_accessor :response, :result, :action, :transaction_id, :message
 
     def initialize(response, action)
       @response = response

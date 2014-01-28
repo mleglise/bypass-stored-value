@@ -16,7 +16,7 @@ module BypassStoredValue
         self.options = args
       end
 
-      def settle(code, amount, tip = false)
+      def settle(code, amount, tip = false, line_items = nil)
         if tip
           tip(code, amount)
         else

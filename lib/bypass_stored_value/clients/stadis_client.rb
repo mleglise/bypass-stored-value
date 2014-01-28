@@ -85,7 +85,7 @@ module BypassStoredValue
               Tenders: { StadisTranTender: request_data[:tenders] }})
       end
 
-      def settle(code, amount, tip = false)
+      def settle(code, amount, tip = false, line_items = nil)
         BypassStoredValue::StadisResponse.new(nil, "stadis_settle")
       end
 

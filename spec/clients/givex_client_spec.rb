@@ -24,7 +24,6 @@ describe BypassStoredValue::Clients::GivexClient do
 
   end
 
-
   it 'can get balance' do
     stub_request(:post, "https://#{@user}:#{@password}@#{@endpoint}/")
       .with(:body => /(...)/)

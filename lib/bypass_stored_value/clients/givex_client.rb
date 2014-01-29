@@ -72,7 +72,10 @@ module BypassStoredValue
 
       #Cancel
       def cancel(card_number, amount, transaction_code)
-        make_request("dc_907", get_params(transaction_code, card_number, amount), transaction_code)
+        cancel_code = "can#{rand(10**12)}"
+        params = get_params(cancel_code, card_number, amount)
+        params << transaction_code
+        make_request("dc_907", params, cancel_code)
       end
 
       #Adjustment

@@ -26,14 +26,16 @@ module BypassStoredValue
           case method
             when 'dc_909'
               parse_balance_inquiry(@result)
+              @transaction_id = @result[0] rescue nil
             when 'dc_901', 'dc_905', 'dc_906', 'dc_907', 'dc_908', 'dc_918'
               parse_balance_from_transaction(@result)
+              @transaction_id = @result[2] rescue nil
           end
         else
           @message = "Error #{@result[1]} : #{@result[2]}"
+          @transaction_id = @result[0] rescue nil
         end
 
-        @transaction_id = @result[0] rescue nil
       end
 
       def parse_balance_inquiry(result)

@@ -1,44 +1,51 @@
 module BypassStoredValue
   module Clients
     class StadisClient
-      attr_accessor :client, :protocol, :host, :port, :user, :password, :reference_number, :vendor_cashier, :vendor_id, :register_id, :location_id
+      attr_accessor :client, :protocol, :host, :port,
+                    :user, :password, :reference_number,
+                    :vendor_cashier, :vendor_id, :register_id,
+                    :location_id
 
       def initialize(user, password, args={})
-        @protocol = args[:protocol]
-        @host = args[:host]
-        @port = args[:port]
-        @vendor_cashier = args[:vendor_cashier]
-        @vendor_id = args[:vendor_id]
-        @register_id = args[:register_id]
-        @location_id = args[:location_id]
+        @protocol         = args[:protocol]
+        @host             = args[:host]
+        @port             = args[:port]
+        @vendor_cashier   = args[:vendor_cashier]
+        @vendor_id        = args[:vendor_id]
+        @register_id      = args[:register_id]
+        @location_id      = args[:location_id]
         @reference_number = args[:reference_number]
-        @user = user
-        @password = password
-        @mock = args[:mock]
+        @user             = user
+        @password         = password
+        @mock             = args[:mock]
 
         client
       end
 
       def client
         @client ||= Savon.client({
-            endpoint: "#{protocol}://#{host}:#{port}/StadisWeb/StadisTransactions.asmx",
-            namespace: "http://www.STADIS.com/",
-            convert_request_keys_to: :none,
-            read_timeout: 5000,
-            open_timeout: 360,
-            element_form_default: :unqualified,
-            namespace_identifier: nil,
+          endpoint: "#{protocol}://#{host}:#{port}/StadisWeb/StadisTransactions.asmx",
+          namespace: "http://www.STADIS.com/",
+          convert_request_keys_to: :none,
+          read_timeout: 5000,
+          open_timeout: 360,
+          element_form_default: :unqualified,
+          namespace_identifier: nil,
 
-            ssl_verify_mode: :none,
-            env_namespace: :soap,
-            soap_header: {
+          ssl_verify_mode: :none,
+          env_namespace: :soap,
+          soap_header: {
+            SecurityCredentials: {
+              UserID: user,
+              Password: password
+            },
+            attributes!: {
               SecurityCredentials: {
-                  UserID: user,
-                  Password: password
-              },
-              attributes!: {SecurityCredentials: {xmlns: "http://www.STADIS.com/"}}
+                xmlns: "http://www.STADIS.com/"
+              }
             }
-          })
+          }
+        })
       end
 
       def soap_action(action)
@@ -47,42 +54,47 @@ module BypassStoredValue
 
       def balance(code)
         make_request("StadisBalanceCheck", {
-              StatusCheckInput: {
-                  TransactionType: 3,
-                  TenderTypeID: 1,
-                  TenderID: code,
-                  Amount: 0}})
+          StatusCheckInput: {
+            TransactionType: 3,
+            TenderTypeID: 1,
+            TenderID: code,
+            Amount: 0
+          }
+        })
       end
 
       def authorize(code, amount, tip = false)
         make_request("StadisAccountCharge", {
-            ChargeInput: {
-              ReferenceNumber: "byp_#{rand(10**6)}",
-              RegisterID: register_id,
-              VendorCashier: vendor_cashier,
-              TransactionType: 1,
-              TenderTypeID: 1,
-              TenderID: code,
-              Amount: amount}})
+          ChargeInput: {
+            ReferenceNumber: "byp_#{rand(10**6)}",
+            RegisterID: register_id,
+            VendorCashier: vendor_cashier,
+            TransactionType: 1,
+            TenderTypeID: 1,
+            TenderID: code,
+            Amount: amount
+          }
+        })
       end
 
       def post_transaction(line_items = [], payments = [])
         request_data = set_up_transaction_request_data(line_items, payments)
         make_request("PostTransaction", {
-              Header: {
-                  LocationID: location_id,
-                  RegisterID: register_id,
-                  ReceiptID: "byp_#{rand(10**6)}",
-                  VendorID: vendor_id,
-                  VendorCashier: vendor_cashier,
-                  VendorDiscountPct: "0",
-                  VendorDiscount: 0,
-                  VendorTax: 0,
-                  VendorTip: 0,
-                  SubTotal: request_data[:total],
-                  Total: request_data[:total]},
-              Items: { StadisTranItem: request_data[:items] },
-              Tenders: { StadisTranTender: request_data[:tenders] }})
+          Header: {
+            LocationID: location_id,
+            RegisterID: register_id,
+            ReceiptID: "byp_#{rand(10**6)}",
+            VendorID: vendor_id,
+            VendorCashier: vendor_cashier,
+            VendorDiscountPct: "0",
+            VendorDiscount: 0,
+            VendorTax: 0,
+            VendorTip: 0,
+            SubTotal: request_data[:total],
+            Total: request_data[:total]},
+          Items: { StadisTranItem: request_data[:items] },
+          Tenders: { StadisTranTender: request_data[:tenders] }
+        })
       end
 
       def settle(code, amount, tip = false, line_items = nil)
@@ -91,21 +103,24 @@ module BypassStoredValue
 
       def refund(code, authorization_id, amount)
         make_request("ReverseStadisAccountCharge", {
-            ReverseChargeInput: {
-              ReferenceNumber: authorization_id,
-              RegisterID: register_id,
-              VendorCashier: vendor_cashier,
-              TransactionType: 2,
-              TenderTypeID: 1,
-              TenderID: code,
-              Amount: amount}})
+          ReverseChargeInput: {
+            ReferenceNumber: authorization_id,
+            RegisterID: register_id,
+            VendorCashier: vendor_cashier,
+            TransactionType: 2,
+            TenderTypeID: 1,
+            TenderID: code,
+            Amount: amount}
+        })
       end
 
       def reload_card(code, amount)
         make_request("ReloadGiftCard", {
           ReloadGiftCard: {
             CardID: code,
-            Amount: amount}})
+            Amount: amount
+          }
+        })
       end
 
       private
@@ -126,8 +141,8 @@ module BypassStoredValue
         end
 
         {
-          items: items, 
-          tenders: tenders, 
+          items: items,
+          tenders: tenders,
           total: total
         }
       end
@@ -156,13 +171,14 @@ module BypassStoredValue
         return BypassStoredValue::MockResponse.new(message.values[0]) if @mock == true
         response = client.call(action,
           soap_action: soap_action(action),
-          message: message)
+          message: message
+        )
         BypassStoredValue::StadisResponse.new(response, parse_action(action))
       end
 
       def parse_action(action)
         case action
-        when "StadisAccountCharge" 
+        when "StadisAccountCharge"
           "stadis_account_charge"
         when "PostTransaction"
           "stadis_post_transaction"
@@ -172,7 +188,7 @@ module BypassStoredValue
           "stadis_reload"
         when "StadisBalanceCheck"
           "stadis_balance_check"
-        else 
+        else
           "action_not_found"
         end
       end

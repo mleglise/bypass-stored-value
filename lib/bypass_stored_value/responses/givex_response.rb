@@ -33,7 +33,7 @@ module BypassStoredValue
           end
         else
           @message = "Error #{@result[1]} : #{@result[2]}"
-          @transaction_id = @result[0] rescue nil
+          @transaction_id = @result[1] rescue nil
         end
 
       end

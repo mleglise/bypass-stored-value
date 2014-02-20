@@ -67,9 +67,9 @@ describe BypassStoredValue::Clients::GivexClient do
     stub_request(:post, "https://#{@user}:#{@password}@#{@endpoint}/")
       .with(:body => /(...)/)
       .to_return(:body => fixture("response/givex/sucessful_transaction.json"))
-    response = @client.refund('603628835492000059280', 'sometrans', 100)
+    response = @client.refund('603628835492000059280', '106155', 100)
     response.successful?.should be_true
-    response.transaction_id.should eql('sometrans')
+    response.transaction_id.should eql('106155')
   end
 
   it 'returns a successful authorization' do
@@ -82,6 +82,19 @@ describe BypassStoredValue::Clients::GivexClient do
     expect(@client).to receive(:reversal).exactly(2).times
     @client.reload_account('603628835492000059280', 100)
   end
+
+  it 'calls reversal after a timeout' do
+    @client.stub(:client).and_raise("Timeout Error")
+    expect(@client).to receive(:reversal).exactly(2).times
+    @client.settle('60362858224161577573', 6)
+  end
+
+  it 'calls reversal after a timeout' do
+    @client.stub(:client).and_raise("Timeout Error")
+    expect(@client).to receive(:reversal).exactly(2).times
+    @client.settle('60362858224161577573', 7)
+  end
+
 
   it 'can pass in skus' do
     stub_request(:post, "https://#{@user}:#{@password}@#{@endpoint}/")

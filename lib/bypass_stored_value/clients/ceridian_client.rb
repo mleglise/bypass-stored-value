@@ -221,7 +221,7 @@ module BypassStoredValue
           begin
             response = client.call(action, message: message)
             ceridian_response = handle_response(response, action)
-          rescue => e
+          rescue
           end
 
           while (ceridian_response.nil? || ceridian_response.return_code == '15') && count < 3 && action != :cancel && action != :balance_inquiry do        #don't do reversals for cancels

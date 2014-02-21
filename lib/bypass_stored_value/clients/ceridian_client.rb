@@ -80,7 +80,7 @@ module BypassStoredValue
         end
 
         if count == 3 || ceridian_response.nil?
-          BypassStoredValue::FailedResponse.new(nil, :cancel, "Trouble taking to service.")
+          BypassStoredValue::FailedResponse.new(nil, :cancel, "Trouble talking to service.")
         else
           ceridian_response
         end
@@ -226,7 +226,7 @@ module BypassStoredValue
           end
 
           if (count == 3 || ceridian_response.nil?) && action != :cancel
-            BypassStoredValue::FailedResponse.new(nil, action, "Trouble taking to service.")
+            BypassStoredValue::FailedResponse.new(nil, action, "Trouble talking to service.")
           else
             ceridian_response
           end

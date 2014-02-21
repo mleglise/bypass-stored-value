@@ -28,10 +28,15 @@ module BypassStoredValue
       raise NotImplementedError
     end
 
-  protected
-    def production?
-      options[:production] == true
+    def make_request(*args)
+      raise NotImplementedError
     end
 
+    def self.define_action(action_name)
+      method_name = action_name.underscore
+      define_method(method_name) do |*args|
+        make_request(*args)
+      end
+    end
   end
 end

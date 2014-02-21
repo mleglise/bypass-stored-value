@@ -39,7 +39,7 @@ module BypassStoredValue
         }
       end
 
-    private
+      private
       def client
         @client ||= Savon.client do
           wsdl 'http://ws.valutec.net/Valutec.asmx?WSDL'
@@ -51,16 +51,48 @@ module BypassStoredValue
       end
 
       def transaction_types
-        [
-          "Sale", "Activation", "AddValue",
-          "Void", "Balance", "Current_Day_Totals",
-          "Previous_Day_Totals", "Deactivate", "Replace",
-          "CreateCard", "Restaurant_Sale", "CashOut"
-        ]
+        %w(
+          Sale
+          Activation
+          AddValue
+          Void
+          Balance
+          Current_Day_Totals
+          Previous_Day_Totals
+          Deactivate
+          Replace
+          CreateCard
+          Restaurant_Sale
+          CashOut
+        )
       end
 
       def make_request(action, card_number, amount, message)
         client.call(action)
+      end
+
+      def actions
+        %w(
+          CardRegistration
+          Registration_Get
+          Registration_Set
+          Registration_SetEx
+          Transaction_ActivateCard
+          Transaction_AddValue
+          Transaction_AdjustBalance
+          Transaction_CardBalance
+          Transaction_Cardless
+          Transaction_CardlessEx
+          Transaction_CashOut
+          Transaction_CreateCard
+          Transaction_DeactivateCard
+          Transaction_Generic
+          Transaction_HostTotals
+          Transaction_ReplaceCard
+          Transaction_RestaurantSale
+          Transaction_Sale
+          Transaction_Void
+        )
       end
     end
   end

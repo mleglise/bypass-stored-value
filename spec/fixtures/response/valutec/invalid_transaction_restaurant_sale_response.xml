@@ -1,0 +1,36 @@
+<?xml version="1.0"?>
+<soap:Envelope xmlns:soap="http://schemas.xmlsoap.org/soap/envelope/" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema">
+  <soap:Body>
+    <Transaction_RestaurantSaleResponse xmlns="https://ws.valutec.net/">
+      <Transaction_RestaurantSaleResult>
+        <RawOutput/>
+        <TerminalID/>
+        <IPaddress/>
+        <Authorized>false</Authorized>
+        <AuthorizationCode/>
+        <TransactionType/>
+        <Balance/>
+        <PointBalance/>
+        <RewardLevel/>
+        <Refund/>
+        <CardAmountUsed/>
+        <AmountDue/>
+        <TotalSales/>
+        <TotalSales_Amount/>
+        <TotalActivations/>
+        <TotalActivations_Amount/>
+        <TotalAddValues/>
+        <TotalAddValues_Amount/>
+        <TotalVoids/>
+        <TotalVoids_Amount/>
+        <TotalDeactivations/>
+        <TotalDeactivations_Amount/>
+        <Identifier/>
+        <ErrorMsg>Invalid Client Key</ErrorMsg>
+        <CardNumber/>
+        <CardPIN/>
+      </Transaction_RestaurantSaleResult>
+    </Transaction_RestaurantSaleResponse>
+  </soap:Body>
+</soap:Envelope>
+

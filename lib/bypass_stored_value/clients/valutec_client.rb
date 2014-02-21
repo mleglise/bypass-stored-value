@@ -25,7 +25,7 @@ module BypassStoredValue
         client
       end
 
-      def settle(code, amount, tip_amount)
+      def settle(code, amount, tip_amount=0)
         transaction_restaurant_sale({
           ClientKey: @client_key,
           TerminalID: '',

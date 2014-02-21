@@ -48,29 +48,29 @@ module BypassStoredValue
         end
       end
 
+      def make_request(action, card_number, amount, message)
+        client.call(action)
+      end
+
       def program_types
         [:gift, :loyalty]
       end
 
       def transaction_types
         %w(
-          Sale
           Activation
           AddValue
-          Void
           Balance
-          Current_Day_Totals
-          Previous_Day_Totals
-          Deactivate
-          Replace
-          CreateCard
-          Restaurant_Sale
           CashOut
+          CreateCard
+          Current_Day_Totals
+          Deactivate
+          Previous_Day_Totals
+          Replace
+          Restaurant_Sale
+          Sale
+          Void
         )
-      end
-
-      def make_request(action, card_number, amount, message)
-        client.call(action)
       end
 
       def actions

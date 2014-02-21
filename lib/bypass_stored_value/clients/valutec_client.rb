@@ -1,19 +1,41 @@
 module BypassStoredValue
   module Clients
     class ValutecClient < BypassStoredValue::Client
-      attr_reader :client
-      attr_accessor :options
+      attr_reader :client, :options, :client_key, :server_id,
+                  :identifier
+      define_action :registration_get, :registration_set,
+                    :registration_set_ex, :transaction_activate_card,
+                    :transaction_add_value, :transaction_adjust_balance,
+                    :transaction_card_balance, :transaction_cardless,
+                    :transaction_cardless_ex, :transaction_cash_out,
+                    :transaction_create_card, :transaction_deactivate_card,
+                    :transaction_generic, :transaction_host_totals,
+                    :transaction_replace_card, :transaction_restaurant_sale,
+                    :transaction_sale, :transaction_void
 
       def initialize(user, password, args={})
         @user = user
         @password = password
         @client_key = args.fetch(:client_key)
-        self.options = options
+        @terminal_id = args.fetch(:terminal_id)
+        @server_id = args.fetch(:server_id)
+        @identifier = args.fetch(:identifier)
+
+        @options = args
         client
       end
 
-      def settle(code, amount, tip = false)
-        raise NotImplementedError
+      def settle(code, amount, tip_amount)
+        transaction_restaurant_sale({
+          ClientKey: @client_key,
+          TerminalID: '',
+          ProgramType: '',
+          CardNumber: '',
+          Amount: amount,
+          TipAmount: tip_amount,
+          ServerID: @server_id,
+          Identifier: @identifier
+        })
       end
 
       def authorize(code, amount, tip = false)
@@ -78,24 +100,6 @@ module BypassStoredValue
           Deactivate Previous_Day_Totals Replace
           Restaurant_Sale Sale Void
         )
-      end
-
-      # Might not be obvious:
-      #   This creates a method for every action defined within this
-      #   array. Method parameters are set from within the define_method
-      #   block
-      %w(
-        CardRegistration Registration_Get Registration_Set
-        Registration_SetEx Transaction_ActivateCard Transaction_AddValue
-        Transaction_AdjustBalance Transaction_CardBalance Transaction_Cardless
-        Transaction_CardlessEx Transaction_CashOut Transaction_CreateCard
-        Transaction_DeactivateCard Transaction_Generic Transaction_HostTotals
-        Transaction_ReplaceCard Transaction_RestaurantSale Transaction_Sale
-        Transaction_Void
-      ).each do |action|
-        method_name = action.underscore
-        define_method(method_name.to_sym) do |card_number, amount, message|
-        end
       end
     end
   end

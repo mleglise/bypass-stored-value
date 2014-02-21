@@ -32,10 +32,11 @@ module BypassStoredValue
       raise NotImplementedError
     end
 
-    def self.define_action(action_name)
-      method_name = action_name.underscore
-      define_method(method_name) do |*args|
-        make_request(*args)
+    def self.define_action(*action_names)
+      action_names.each do |action_name|
+        define_method(action_name) do |*args|
+          make_request(action_name, *args)
+        end
       end
     end
   end

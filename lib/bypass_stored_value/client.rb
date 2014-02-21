@@ -28,5 +28,10 @@ module BypassStoredValue
       raise NotImplementedError
     end
 
+  protected
+    def production?
+      options[:production] == true
+    end
+
   end
 end

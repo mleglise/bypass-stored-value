@@ -199,10 +199,6 @@ module BypassStoredValue
       end
 
       private
-        def production?
-          options[:production] == true
-        end
-
         def client
           @client ||= Savon.client({
             wsdl: wsdl,

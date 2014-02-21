@@ -1,6 +1,8 @@
 module BypassStoredValue
   module Clients
     class CeridianClient < BypassStoredValue::Client
+      attr_accessor :options
+
       def initialize(user, password, args= {})
         @merchant_name   = args.fetch(:merchant_name, "Palace")
         @merchant_number = args.fetch(:merchant_number, "130006")

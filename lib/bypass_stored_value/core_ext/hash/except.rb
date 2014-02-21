@@ -1,3 +1,4 @@
+# https://github.com/rails/rails/blob/master/activesupport/lib/active_support/core_ext/hash/except.rb
 class Hash
   # Return a hash that includes everything but the given keys. This is useful for
   # limiting a set of parameters to everything but a few known toggles:

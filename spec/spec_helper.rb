@@ -9,6 +9,11 @@ require 'awesome_print'
 require 'bypass_stored_value'
 require "nori"
 
+require_relative 'helpers/savon_logging'
+
+savon_logger = Logger.new('log/test.log')
+Savon::RequestLogger.test_logger = savon_logger
+HTTPI.logger = savon_logger
 # See http://rubydoc.info/gems/rspec-core/RSpec/Core/Configuration
 RSpec.configure do |config|
   config.after(:suite) do

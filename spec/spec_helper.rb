@@ -7,7 +7,8 @@ Bundler.setup(:default, :development)
 require 'webmock/rspec'
 require 'awesome_print'
 require 'bypass_stored_value'
-require "nori"
+require 'nori'
+require 'pry'
 
 require_relative 'helpers/savon_logging'
 

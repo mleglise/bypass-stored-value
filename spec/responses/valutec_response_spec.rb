@@ -3,7 +3,8 @@ require 'spec_helper'
 describe BypassStoredValue::ValutecResponse do
   describe 'failed requests' do
     subject do
-      resp = double(body: nori.parse(fixture("response/valutec/invalid_transaction_restaurant_sale_response.xml")))
+      response = nori.parse(fixture("response/valutec/invalid_transaction_restaurant_sale_response.xml"))
+      resp = double(body: response[:envelope][:body])
       BypassStoredValue::ValutecResponse.new(resp, :transaction_restaurant_sale)
     end
 

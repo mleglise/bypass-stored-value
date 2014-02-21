@@ -22,7 +22,7 @@ module BypassStoredValue
     end
 
     def errors
-      deep_find(:error_msg, @response)
+      @response.all_values_for_key(:error_msg).join(',')
     end
   end
 end

@@ -7,8 +7,8 @@ require "bypass_stored_value/exception"
 require "bypass_stored_value/response"
 require "bypass_stored_value/mock_response"
 require 'savon'
-require 'bypass_stored_value/core_ext/hash/except'
-require 'bypass_stored_value/core_ext/object/try'
+require 'bypass_stored_value/core_ext/hash'
+require 'bypass_stored_value/core_ext/object'
 
 
 module BypassStoredValue

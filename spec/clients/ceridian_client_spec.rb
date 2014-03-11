@@ -17,6 +17,7 @@ describe BypassStoredValue::Clients::CeridianClient do
     it 'can print actions' do
       BypassStoredValue::Clients::CeridianClient.new "me", "letmein"
     end
+
     it 'can handle balance inquiry' do
       stub_request(:post, "https://webservices-cert.storedvalue.com/svsxml/services/SVSXMLWay")
       .with(:body => /(...)/)
@@ -37,7 +38,6 @@ describe BypassStoredValue::Clients::CeridianClient do
       response.hash[:envelope][:body][:issue_gift_card_response][:issue_gift_card_return][:approved_amount][:amount].should eql('75.0')
       response.hash[:envelope][:body][:issue_gift_card_response][:issue_gift_card_return][:stan]
     end
-
 
     it 'can redeem funds' do
       stub_request(:post, "https://webservices-cert.storedvalue.com/svsxml/services/SVSXMLWay")
@@ -131,6 +131,7 @@ describe BypassStoredValue::Clients::CeridianClient do
       response.hash[:envelope][:body][:cancel_response][:cancel_return][:balance_amount][:amount].should eql(balance)
       #WebMock.disable_net_connect!
     end
+
     it 'can clear a registered card' do
       stub_request(:post, "https://webservices-cert.storedvalue.com/svsxml/services/SVSXMLWay")
       .with(:body => /(...)/)

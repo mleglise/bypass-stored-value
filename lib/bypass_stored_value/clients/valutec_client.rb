@@ -3,6 +3,7 @@ module BypassStoredValue
     class ValutecClient < BypassStoredValue::Client
       attr_reader :client, :options, :client_key, :server_id,
                   :identifier
+
       define_action :registration_get, :registration_set,
                     :registration_set_ex, :transaction_activate_card,
                     :transaction_add_value, :transaction_adjust_balance,
@@ -14,28 +15,23 @@ module BypassStoredValue
                     :transaction_sale, :transaction_void
 
       def initialize(user, password, args={})
-        @user = user
-        @password = password
-        @client_key = args.fetch(:client_key)
-        @terminal_id = args.fetch(:terminal_id)
-        @server_id = args.fetch(:server_id)
-        @identifier = args.fetch(:identifier)
+        @user        = user
+        @password    = password
+        @client_key  = args.fetch(:client_key) #provided by Valutec
+        @terminal_id = args.fetch(:terminal_id) #provided by Valutec, does not map to Terminal ID in Bypass Backend
+        @server_id   = args.fetch(:server_id) #map to Bypass Terminal ID, optional in Valutec's system
+        @identifier  = args.fetch(:identifier) #map to Bypass Order ID, optional in Valutec's system
 
         @options = args
         client
       end
 
       def settle(code, amount, tip_amount=0)
-        transaction_restaurant_sale({
-          ClientKey: @client_key,
-          TerminalID: '',
-          ProgramType: '',
-          CardNumber: '',
-          Amount: amount,
-          TipAmount: tip_amount,
-          ServerID: @server_id,
-          Identifier: @identifier
-        })
+        transaction_restaurant_sale(basic_request_params.merge({
+           TipAmount: tip_amount,
+           Amount: amount,
+           CardNumber: code
+        }))
       end
 
       def authorize(code, amount, tip = false)
@@ -45,8 +41,10 @@ module BypassStoredValue
         BypassStoredValue::Response.new nil, :post_transaction
       end
 
-      def check_balance
-        raise NotImplementedError
+      def check_balance(code)
+        transaction_card_balance(basic_request_params.merge({
+          CardNumber: code
+        }))
       end
 
       def reload_account(code, amount)
@@ -57,10 +55,11 @@ module BypassStoredValue
         raise NotImplementedError
       end
 
-      def refund(code, transaction_id, amount, original_amount)
-        {
-          RequestAuthCode: transaction_id,
-        }
+      def refund(code, transaction_id)
+        transaction_void(basic_request_params.merge({
+          CardNumber: code,
+          RequestAuthCode: transaction_id
+        }))
       end
 
     private
@@ -100,6 +99,16 @@ module BypassStoredValue
           Deactivate Previous_Day_Totals Replace
           Restaurant_Sale Sale Void
         )
+      end
+
+      def basic_request_params
+        {
+           ClientKey:   @client_key,
+           TerminalID:  @terminal_id,
+           ProgramType: 'Gift',
+           ServerID:    @server_id,
+           Identifier:  @identifier
+        }
       end
     end
   end

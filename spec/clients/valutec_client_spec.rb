@@ -1,0 +1,77 @@
+require 'spec_helper'
+
+describe BypassStoredValue::Clients::ValutecClient do
+  before do
+    args = {
+      client_key: '45c4ddcc-feb1-4cb1-99f0-1ba71d6d8f69',
+      terminal_id: '184012',
+      server_id: '1234',
+      identifier: '1000100'
+    }
+    @client = BypassStoredValue::Clients::ValutecClient.new('user', 'pass', args)
+  end
+
+  it 'can create an instance' do
+    @client.should be_an_instance_of BypassStoredValue::Clients::ValutecClient
+  end
+
+  describe '#basic_request_params' do
+    it 'should return a hash containing general credentials used on all requests' do
+      response = {
+        ClientKey: '45c4ddcc-feb1-4cb1-99f0-1ba71d6d8f69',
+        TerminalID: '184012',
+        ProgramType: 'Gift',
+        ServerID: '1234',
+        Identifier: '1000100'
+      }
+      @client.send(:basic_request_params).should eql(response)
+    end
+  end
+
+  describe 'actions' do
+    describe '#check_balance' do
+      it 'should call #transaction_card_balance with the appropriate message' do
+        @client.should_receive(:transaction_card_balance).with({
+          ClientKey: '45c4ddcc-feb1-4cb1-99f0-1ba71d6d8f69',
+          TerminalID: '184012',
+          ProgramType: 'Gift',
+          CardNumber: '12345',
+          ServerID: '1234',
+          Identifier: '1000100'
+        })
+        @client.check_balance('12345')
+      end
+    end
+
+    describe '#refund' do
+      it 'should call #transaction_void' do
+        @client.should_receive(:transaction_void).with({
+          ClientKey: '45c4ddcc-feb1-4cb1-99f0-1ba71d6d8f69',
+          TerminalID: '184012',
+          ProgramType: 'Gift',
+          CardNumber: '12345',
+          ServerID: '1234',
+          Identifier: '1000100',
+          RequestAuthCode: '123456789'
+        })
+        @client.refund('12345', '123456789')
+      end
+    end
+
+    describe '#settle' do
+      it 'should call #transaction_restaurant_sale with the appropriate message' do
+        @client.should_receive(:transaction_restaurant_sale).with({
+          ClientKey: '45c4ddcc-feb1-4cb1-99f0-1ba71d6d8f69',
+          TerminalID: '184012',
+          ProgramType: 'Gift',
+          ServerID: '1234',
+          Identifier: '1000100',
+          CardNumber: '12345',
+          Amount: 10.00,
+          TipAmount: 5.00
+        })
+        @client.settle('12345', 10.00, 5.00)
+      end
+    end
+  end
+end

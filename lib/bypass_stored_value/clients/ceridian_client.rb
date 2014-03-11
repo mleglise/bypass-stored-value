@@ -4,24 +4,21 @@ module BypassStoredValue
       attr_accessor :options
 
       def initialize(user, password, args= {})
-        @merchant_name = args.fetch(:merchant_name, "Palace")
+        @merchant_name   = args.fetch(:merchant_name, "Palace")
         @merchant_number = args.fetch(:merchant_number, "130006")
-        @store_number = args.fetch(:store_number, "1234567890")
-        @division = args.fetch(:division, "00000")
-        @routingID = args.fetch(:routingID, "6006492606500000000")
-        @test_mode = args.fetch(:test_mode, true)
-        @user = user
-        @password = password
-        @mock = args.fetch(:mock, false)
+        @store_number    = args.fetch(:store_number, "1234567890")
+        @division        = args.fetch(:division, "00000")
+        @routingID       = args.fetch(:routingID, "6006492606500000000")
+        @test_mode       = args.fetch(:test_mode, true)
+        @user            = user
+        @password        = password
+        @mock            = args.fetch(:mock, false)
+
         self.options = args
       end
 
       def settle(code, amount, tip = false, line_items = nil)
-        if tip
-          tip(code, amount)
-        else
-          redeem(code,amount)
-        end
+        tip ? tip(code, amount) : redeem(code,amount)
       end
 
       def authorize(code, amount, tip)
@@ -46,25 +43,25 @@ module BypassStoredValue
       end
 
       def balance_inquiry(card_number)
-        resp = make_request(:balance_inquiry, card_number, 0.0, build_request(
-                {card: card_info(card_number),
-                amount: {
-                    amount: '0.00',
-                    currency: 840
-                },
-                check_for_duplicate: 'false',
-                transactionID: "#{rand(10**6)}",
-                stan: Time.now.strftime('%H%M%S'),
-                routingID: @routingID
-                })
-              )
+        make_request(:balance_inquiry, card_number, 0.0, build_request({
+            card: card_info(card_number),
+            amount: {
+              amount: '0.00',
+              currency: 840
+            },
+            check_for_duplicate: 'false',
+            transactionID: "#{rand(10**6)}",
+            stan: Time.now.strftime('%H%M%S'),
+            routingID: @routingID
+          })
+        )
       end
 
       def cancel(card_number, amount, stan)
         count = 0
         ceridian_response = nil
 
-        while (ceridian_response.nil? or ceridian_response.return_code == '15') and count < 3 do
+        while (ceridian_response.nil? || ceridian_response.return_code == '15') && count < 3 do
           ceridian_response = make_request(:cancel, card_number, amount, build_request(
               {
                 card: card_info(card_number),
@@ -82,8 +79,8 @@ module BypassStoredValue
           count += 1
         end
 
-        if count == 3 or ceridian_response.nil?
-          BypassStoredValue::FailedResponse.new(nil, :cancel, "Trouble taking to service.")
+        if count == 3 || ceridian_response.nil?
+          BypassStoredValue::FailedResponse.new(nil, :cancel, "Trouble talking to service.")
         else
           ceridian_response
         end
@@ -147,19 +144,19 @@ module BypassStoredValue
 
       def issue_gift_card(card_number, amount, pin = '', expiration = '', stan = Time.now.strftime('%H%M%S'))
         make_request(:issue_gift_card, card_number, amount, build_request(
-            {
-              card: card_info(card_number),
-             issue_amount: {
-                 amount: amount,
-                 currency: 'USD'
-             },
-             transactionID: "#{rand(10**6)}",
-             check_for_duplicate: 'false',
-             stan: stan,
-             routingID: @routingID
-            }
-          )
+          {
+            card: card_info(card_number),
+            issue_amount: {
+              amount: amount,
+              currency: 'USD'
+            },
+            transactionID: "#{rand(10**6)}",
+            check_for_duplicate: 'false',
+            stan: stan,
+            routingID: @routingID
+          }
         )
+                    )
 
       end
 
@@ -202,9 +199,9 @@ module BypassStoredValue
       end
 
       private
-        def production?
-          options[:production] == true
-        end
+      def production?
+        options[:production] == true
+      end
 
         def client
           @client ||= Savon.client({
@@ -224,18 +221,16 @@ module BypassStoredValue
           begin
             response = client.call(action, message: message)
             ceridian_response = handle_response(response, action)
-          rescue => e
-            #A timeout will come here
-            puts e
+          rescue
           end
 
-          while (ceridian_response.nil? or ceridian_response.return_code == '15') and count < 3 and action != :cancel and action != :balance_inquiry do        #don't do reversals for cancels
-            ceridian_response = reversal(card_number, amount, message[:request][:stan]) if message[:request] and message[:request][:stan]
+          while (ceridian_response.nil? || ceridian_response.return_code == '15') && count < 3 && action != :cancel && action != :balance_inquiry do        #don't do reversals for cancels
+            ceridian_response = reversal(card_number, amount, message[:request][:stan]) if message[:request] && message[:request][:stan]
             count += 1
           end
 
-          if (count == 3 or ceridian_response.nil?) and action != :cancel
-            BypassStoredValue::FailedResponse.new(nil, action, "Trouble taking to service.")
+          if (count == 3 || ceridian_response.nil?) && action != :cancel
+            BypassStoredValue::FailedResponse.new(nil, action, "Trouble talking to service.")
           else
             ceridian_response
           end
@@ -248,16 +243,16 @@ module BypassStoredValue
 
         def reversal(card_number, amount, stan)
           response = client.call(:reversal, message: build_request(
-                                                          {
-                                                            card: card_info(card_number),
-                                                            transaction_amount: {
-                                                              amount: amount,
-                                                              currency: 'USD'
-                                                             },
-                                                            routingID: @routingID,
-                                                            stan: stan
-                                                          }
-                                                                )
+            {
+              card: card_info(card_number),
+              transaction_amount: {
+                amount: amount,
+                currency: 'USD'
+              },
+              routingID: @routingID,
+              stan: stan
+            }
+          )
                                 )
           handle_response response, :reversal
 

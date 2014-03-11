@@ -1,36 +1,23 @@
 require 'spec_helper'
 
 describe BypassStoredValue::Clients::CeridianClient do
-  before do
-
-  end
-
   it 'Can create an instance' do
     BypassStoredValue::Clients::CeridianClient.new("user", "pass").should be_an_instance_of BypassStoredValue::Clients::CeridianClient
   end
 
   describe 'stored value interface' do
-    it 'should implement all public methods' do
-      client = BypassStoredValue::Clients::CeridianClient.new "me", "letmein"
-      client.respond_to?(:settle).should be_true
-      client.respond_to?(:refund).should be_true
-      client.respond_to?(:authorize).should be_true
-      client.respond_to?(:post_transaction).should be_true
-    end
-
+    subject { BypassStoredValue::Clients::CeridianClient.new "me", "letmein" }
+    it { should respond_to(:settle) }
+    it { should respond_to(:refund) }
+    it { should respond_to(:authorize) }
+    it { should respond_to(:post_transaction) }
   end
 
   describe "actions" do
-    before(:all) do
-      #WebMock.allow_net_connect!
-    end
-    after(:all) do
-      #WebMock.disable_net_connect!
+    it 'can print actions' do
+      BypassStoredValue::Clients::CeridianClient.new "me", "letmein"
     end
 
-    it 'can print actions' do
-      client = BypassStoredValue::Clients::CeridianClient.new "me", "letmein"
-    end
     it 'can handle balance inquiry' do
       stub_request(:post, "https://webservices-cert.storedvalue.com/svsxml/services/SVSXMLWay")
       .with(:body => /(...)/)
@@ -49,9 +36,8 @@ describe BypassStoredValue::Clients::CeridianClient do
       client = BypassStoredValue::Clients::CeridianClient.new "me", "pass"
       response = client.issue_gift_card('6006492606749900007', 100.00, Time.now.strftime('%H%M%S'))
       response.hash[:envelope][:body][:issue_gift_card_response][:issue_gift_card_return][:approved_amount][:amount].should eql('75.0')
-      stan = response.hash[:envelope][:body][:issue_gift_card_response][:issue_gift_card_return][:stan]
+      response.hash[:envelope][:body][:issue_gift_card_response][:issue_gift_card_return][:stan]
     end
-
 
     it 'can redeem funds' do
       stub_request(:post, "https://webservices-cert.storedvalue.com/svsxml/services/SVSXMLWay")
@@ -145,13 +131,14 @@ describe BypassStoredValue::Clients::CeridianClient do
       response.hash[:envelope][:body][:cancel_response][:cancel_return][:balance_amount][:amount].should eql(balance)
       #WebMock.disable_net_connect!
     end
+
     it 'can clear a registered card' do
       stub_request(:post, "https://webservices-cert.storedvalue.com/svsxml/services/SVSXMLWay")
       .with(:body => /(...)/)
       .to_return(:body => fixture("response/ceridian/balance_inquiry_response.xml"))
 
       client = BypassStoredValue::Clients::CeridianClient.new "me", "letmein"
-      response = client.balance_inquiry('6006492606749903720')
+      client.balance_inquiry('6006492606749903720')
     end
 
     xit 'can pre-auth a card and then settle the amount' do

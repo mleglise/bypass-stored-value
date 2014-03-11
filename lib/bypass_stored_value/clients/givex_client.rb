@@ -116,7 +116,7 @@ module BypassStoredValue
 
         rescue => e
           #start retry logic, (call reverse, change endpoint, call transaction, call reverse if that also fails)
-          if card_number and primary
+          if card_number && primary
             return handle_error(method, params, transaction_code, card_number, amount)
           elsif card_number
             return reversal(card_number, transaction_code, amount)

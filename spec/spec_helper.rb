@@ -7,8 +7,16 @@ Bundler.setup(:default, :development)
 require 'webmock/rspec'
 require 'awesome_print'
 require 'bypass_stored_value'
-require "nori"
+require 'nori'
+require 'pry'
 
+require_relative 'helpers/savon_logging'
+
+FileUtils.mkdir('log') unless Dir.exists?('log')
+
+savon_logger = Logger.new('log/test.log')
+Savon::RequestLogger.test_logger = savon_logger
+HTTPI.logger = savon_logger
 # See http://rubydoc.info/gems/rspec-core/RSpec/Core/Configuration
 RSpec.configure do |config|
   config.after(:suite) do

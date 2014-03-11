@@ -12,6 +12,8 @@ require 'pry'
 
 require_relative 'helpers/savon_logging'
 
+FileUtils.mkdir('log') unless Dir.exists?('log')
+
 savon_logger = Logger.new('log/test.log')
 Savon::RequestLogger.test_logger = savon_logger
 HTTPI.logger = savon_logger

@@ -18,11 +18,11 @@ module BypassStoredValue
     end
 
     def successful?
-      errors.nil? || errors.empty?
+      errors.nil? || errors.empty? || @message == 'Approved'
     end
 
     def errors
-      @response.all_values_for_key(:error_msg).join(',')
+      @response.all_values_for_key(:error_msg).join(',') if @response
     end
   end
 end

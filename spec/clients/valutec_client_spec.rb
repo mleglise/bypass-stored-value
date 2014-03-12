@@ -59,7 +59,7 @@ describe BypassStoredValue::Clients::ValutecClient do
       end
     end
 
-    describe '#settle' do
+    describe '#authorize' do
       it 'should call #transaction_restaurant_sale with the appropriate message' do
         @client.should_receive(:transaction_restaurant_sale).with({
           ClientKey: '45c4ddcc-feb1-4cb1-99f0-1ba71d6d8f69',
@@ -71,7 +71,16 @@ describe BypassStoredValue::Clients::ValutecClient do
           Amount: 10.00,
           TipAmount: 5.00
         })
-        @client.settle('12345', 10.00, 5.00)
+        @client.authorize('12345', 10.00, 5.00)
+      end
+    end
+
+    describe '#settle' do
+      describe 'the returned ValutecResponse' do
+        it 'should be successful? true' do
+          BypassStoredValue::ValutecResponse.should_receive(:new).with(nil, 'settle', true)
+          @client.settle('12345', 10.00, 5.00)
+        end
       end
     end
   end

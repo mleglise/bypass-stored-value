@@ -16,6 +16,11 @@ describe BypassStoredValue::ValutecResponse do
       subject.message.should eq 'Invalid Client Key'
     end
 
+    it 'should return a successful? true response for a settle' do
+      resp = BypassStoredValue::ValutecResponse.new(nil, 'settle', true)
+      resp.successful?.should eq true
+    end
+
     describe '#parse' do
       it 'should return an error if the action given is not in the ACTIONS constant' do
         subject.action = 'some_crazy_action'
@@ -34,12 +39,6 @@ describe BypassStoredValue::ValutecResponse do
           remaining_balance: '10.00'
         }
         subject.parse.should eq result
-      end
-
-      it 'should return a successful? true response for a settle' do
-        subject.action = 'settle'
-        subject.parse
-        subject.successful?.should eq true
       end
     end
   end

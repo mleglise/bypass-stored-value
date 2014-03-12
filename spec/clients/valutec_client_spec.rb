@@ -6,9 +6,10 @@ describe BypassStoredValue::Clients::ValutecClient do
       client_key: '45c4ddcc-feb1-4cb1-99f0-1ba71d6d8f69',
       terminal_id: '184012',
       server_id: '1234',
-      identifier: '1000100'
+      identifier: '1000100',
+      location_id: '307092'
     }
-    @client = BypassStoredValue::Clients::ValutecClient.new('user', 'pass', args)
+    @client = BypassStoredValue::Clients::ValutecClient.new(args)
   end
 
   it 'can create an instance' do

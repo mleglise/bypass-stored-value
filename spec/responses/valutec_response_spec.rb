@@ -15,5 +15,32 @@ describe BypassStoredValue::ValutecResponse do
     it 'returns the error messages' do
       subject.message.should eq 'Invalid Client Key'
     end
+
+    describe '#parse' do
+      it 'should return an error if the action given is not in the ACTIONS constant' do
+        subject.action = 'some_crazy_action'
+        subject.parse.should raise_error BypassStoredValue::Exception::ActionNotFound
+      end
+
+      it 'should call the appropriate build_ACTION_response method based on the action given' do
+        subject.should_receive(:build_transaction_restaurant_sale_response)
+        subject.parse
+      end
+
+      it 'should return the result of the build method called' do
+        result = {
+          authentication_token: '12345',
+          charged_amount: '2.00',
+          remaining_balance: '10.00'
+        }
+        subject.parse.should eq result
+      end
+
+      it 'should return a successful? true response for a settle' do
+        subject.action = 'settle'
+        subject.parse
+        subject.successful?.should eq true
+      end
+    end
   end
 end

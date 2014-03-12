@@ -26,14 +26,15 @@ module BypassStoredValue
       end
 
       def settle(code, amount, tip_amount=0)
-        transaction_restaurant_sale(basic_request_params.merge({
-           TipAmount: tip_amount,
-           Amount: amount,
-           CardNumber: code
-        }))
+        BypassStoredValue::ValutecResponse.new(nil, 'settle', true)
       end
 
-      def authorize(code, amount, tip = false)
+      def authorize(code, amount, tip_amount=0)
+        transaction_restaurant_sale(basic_request_params.merge({
+          TipAmount: tip_amount,
+          Amount: amount,
+          CardNumber: code
+        }))
       end
 
       def post_transaction(line_items = nil, amount = nil)

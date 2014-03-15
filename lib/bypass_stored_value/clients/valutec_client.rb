@@ -14,27 +14,27 @@ module BypassStoredValue
                     :transaction_replace_card, :transaction_restaurant_sale,
                     :transaction_sale, :transaction_void
 
-      def initialize(user, password, args={})
-        @user        = user
-        @password    = password
+      def initialize(args={})
         @client_key  = args.fetch(:client_key) #provided by Valutec
         @terminal_id = args.fetch(:terminal_id) #provided by Valutec, does not map to Terminal ID in Bypass Backend
-        @server_id   = args.fetch(:server_id) #map to Bypass Terminal ID, optional in Valutec's system
+        @server_id   = args.fetch(:server_id) #map to Bypass Order Taker ID, optional in Valutec's system
         @identifier  = args.fetch(:identifier) #map to Bypass Order ID, optional in Valutec's system
+        @location_id = args.fetch(:location_id) #provided by Valutec, does not map to Location ID in Bypass Backend
 
         @options = args
         client
       end
 
       def settle(code, amount, tip_amount=0)
-        transaction_restaurant_sale(basic_request_params.merge({
-           TipAmount: tip_amount,
-           Amount: amount,
-           CardNumber: code
-        }))
+        BypassStoredValue::ValutecResponse.new(nil, 'settle', true)
       end
 
-      def authorize(code, amount, tip = false)
+      def authorize(code, amount, tip_amount=0)
+        transaction_restaurant_sale(basic_request_params.merge({
+          TipAmount: tip_amount,
+          Amount: amount,
+          CardNumber: code
+        }))
       end
 
       def post_transaction(line_items = nil, amount = nil)

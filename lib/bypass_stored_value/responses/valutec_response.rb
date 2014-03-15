@@ -22,6 +22,10 @@ module BypassStoredValue
       @response.all_values_for_key(:error_msg).join(',') if @response
     end
 
+    def balance
+      result[:remaining_balance]
+    end
+
     private
 
       ACTIONS = [:transaction_restaurant_sale, :transaction_card_balance, :transaction_void]
@@ -48,7 +52,8 @@ module BypassStoredValue
         @result = {
           authentication_token: response_hash[:authorization_code],
           charged_amount: response_hash[:card_amount_used],
-          remaining_balance: response_hash[:balance]
+          remaining_balance: response_hash[:balance],
+          message: @message
         }
       end
   end

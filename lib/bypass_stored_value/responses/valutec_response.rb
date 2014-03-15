@@ -10,9 +10,8 @@ module BypassStoredValue
         @message = 'Approved'
       else
         @message = errors
+        parse
       end
-
-      parse
     end
 
     def successful?

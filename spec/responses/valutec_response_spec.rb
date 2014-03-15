@@ -24,12 +24,12 @@ describe BypassStoredValue::ValutecResponse do
     describe '#parse' do
       it 'should return an error if the action given is not in the ACTIONS constant' do
         subject.action = 'some_crazy_action'
-        ->{ subject.parse }.should raise_error BypassStoredValue::Exception::ActionNotFound
+        ->{ subject.send(:parse) }.should raise_error BypassStoredValue::Exception::ActionNotFound
       end
 
       it 'should call the appropriate build_ACTION_response method based on the action given' do
         subject.should_receive(:parse_transaction_restaurant_sale_response)
-        subject.parse
+        subject.send(:parse)
       end
 
       it 'should return the result set by the build_ACTION_response method invoked' do
@@ -49,7 +49,7 @@ describe BypassStoredValue::ValutecResponse do
           }
         }
 
-        subject.parse.should eq result
+        subject.send(:parse).should eq result
       end
     end
   end

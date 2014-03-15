@@ -36,9 +36,11 @@ describe BypassStoredValue::ValutecResponse do
         result = {
           authentication_token: '12345',
           charged_amount: '2.00',
-          remaining_balance: '10.00'
+          remaining_balance: '10.00',
+          message: ''
         }
 
+        subject.message = ''
         subject.response = {
           transaction_restaurant_sale_response: {
             transaction_restaurant_sale_result: {

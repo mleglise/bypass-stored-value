@@ -17,7 +17,7 @@ module BypassStoredValue
       def initialize(args={})
         @client_key  = args.fetch(:client_key) #provided by Valutec
         @terminal_id = args.fetch(:terminal_id) #provided by Valutec, does not map to Terminal ID in Bypass Backend
-        @server_id   = args.fetch(:server_id) #map to Bypass Terminal ID, optional in Valutec's system
+        @server_id   = args.fetch(:server_id) #map to Bypass Order Taker ID, optional in Valutec's system
         @identifier  = args.fetch(:identifier) #map to Bypass Order ID, optional in Valutec's system
         @location_id = args.fetch(:location_id) #provided by Valutec, does not map to Location ID in Bypass Backend
 

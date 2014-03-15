@@ -11,14 +11,8 @@ module BypassStoredValue
       else
         @message = errors
       end
-    end
 
-    ACTIONS = [:transaction_restaurant_sale, :transaction_card_balance, :transaction_void]
-
-    def parse
-      raise BypassStoredValue::Exception::ActionNotFound unless ACTIONS.include?(action)
-      send("parse_#{ action }_response")
-      result
+      parse
     end
 
     def successful?
@@ -30,6 +24,14 @@ module BypassStoredValue
     end
 
     private
+
+      ACTIONS = [:transaction_restaurant_sale, :transaction_card_balance, :transaction_void]
+
+      def parse
+        raise BypassStoredValue::Exception::ActionNotFound unless ACTIONS.include?(action)
+        send("parse_#{ action }_response")
+        result
+      end
 
       def parse_transaction_restaurant_sale_response
         set_result(response[:transaction_restaurant_sale_response][:transaction_restaurant_sale_result])

@@ -136,11 +136,11 @@ module BypassStoredValue
         end
 
         def end_point
-          @test_mode ? "https://dev-dataconnect.givex.com:50101" : "https://gapi.givex.com:50101"
+          @test_mode ? "https://dev-dataconnect.givex.com:50101" : "https://dc-us2.givex.com:50101"
         end
 
         def backup_endpoint
-          @test_mode ? "https://149.99.39.149:50101" : "https://gapi.givex.com:50101"
+          @test_mode ? "https://149.99.39.149:50101" : "https://dc-us1.givex.com:50101"
         end
 
         def handle_response(response, method)

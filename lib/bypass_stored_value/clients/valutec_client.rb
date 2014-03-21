@@ -69,10 +69,7 @@ module BypassStoredValue
 
       def client
         log_lvl = production? ? :error : :debug
-        @client ||= Savon.client do
-          wsdl 'http://ws.valutec.net/Valutec.asmx?WSDL'
-          log_level log_lvl
-        end
+        @client ||= Savon.client(endpoint: 'https://ws.valutec.net/', namespace: 'https://ws.valutec.net/', log_level: log_lvl)
       end
 
       def handle_error(error_response, action)

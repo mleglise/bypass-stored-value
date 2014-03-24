@@ -73,7 +73,7 @@ module BypassStoredValue
       def client
         log_lvl = production? ? :error : :debug
         @client ||= Savon.client(
-          wsdl: 'http://ws.valutec.net/Valutec.asmx?WSDL',
+          wsdl: File.join(BypassStoredValue.root, 'wsdls', 'valutec.wsdl'),
           element_form_default: :unqualified,
           namespace_identifier: nil,
           env_namespace: :soap,

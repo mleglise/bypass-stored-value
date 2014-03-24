@@ -83,5 +83,20 @@ describe BypassStoredValue::Clients::ValutecClient do
         end
       end
     end
+
+    describe '#issue' do
+      it 'should call #transaction_activate_card with the appropriate message' do
+        @client.should_receive(:transaction_activate_card).with({
+          ClientKey: '45c4ddcc-feb1-4cb1-99f0-1ba71d6d8f69',
+          TerminalID: '184012',
+          ProgramType: 'Gift',
+          ServerID: '1234',
+          Identifier: '1000100',
+          CardNumber: '1234567',
+          Amount: 10.00
+        })
+        @client.issue('1234567', 10.00)
+      end
+    end
   end
 end

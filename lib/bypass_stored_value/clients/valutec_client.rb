@@ -52,7 +52,10 @@ module BypassStoredValue
       end
 
       def issue(code, amount)
-        raise NotImplementedError
+        transaction_activate_card(basic_request_params.merge({
+          CardNumber: code,
+          Amount: amount
+        }))
       end
 
       def refund(code, transaction_id)

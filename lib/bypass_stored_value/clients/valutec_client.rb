@@ -74,7 +74,8 @@ module BypassStoredValue
           element_form_default: :unqualified,
           namespace_identifier: nil,
           env_namespace: :soap,
-          log_level: log_lvl
+          log_level: log_lvl,
+          convert_request_keys_to: :camelcase
         )
       end
 

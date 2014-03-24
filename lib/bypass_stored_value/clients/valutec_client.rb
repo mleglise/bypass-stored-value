@@ -72,6 +72,7 @@ module BypassStoredValue
         @client ||= Savon.client(
           wsdl: 'http://ws.valutec.net/Valutec.asmx?WSDL',
           element_form_default: :unqualified,
+          namespace_identifier: nil,
           env_namespace: :soap,
           log_level: log_lvl
         )

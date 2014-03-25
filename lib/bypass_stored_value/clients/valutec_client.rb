@@ -52,7 +52,10 @@ module BypassStoredValue
       end
 
       def issue(code, amount)
-        raise NotImplementedError
+        transaction_activate_card(basic_request_params.merge({
+          CardNumber: code,
+          Amount: amount
+        }))
       end
 
       def refund(code, transaction_id)
@@ -69,10 +72,14 @@ module BypassStoredValue
 
       def client
         log_lvl = production? ? :error : :debug
-        @client ||= Savon.client do
-          wsdl 'http://ws.valutec.net/Valutec.asmx?WSDL'
-          log_level log_lvl
-        end
+        @client ||= Savon.client(
+          wsdl: File.join(BypassStoredValue.root, 'wsdls', 'valutec.wsdl'),
+          element_form_default: :unqualified,
+          namespace_identifier: nil,
+          env_namespace: :soap,
+          log_level: log_lvl,
+          convert_request_keys_to: :camelcase
+        )
       end
 
       def handle_error(error_response, action)

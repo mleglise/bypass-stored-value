@@ -29,7 +29,9 @@ module BypassStoredValue
         BypassStoredValue::ValutecResponse.new(nil, 'settle', true)
       end
 
-      def authorize(code, amount, tip_amount=0)
+      def authorize(code, amount, is_tip=false)
+        amount, tip_amount = handle_amount(amount, is_tip)
+
         transaction_restaurant_sale(basic_request_params.merge({
           TipAmount: tip_amount,
           Amount: amount,
@@ -116,6 +118,16 @@ module BypassStoredValue
            ServerID:    @server_id,
            Identifier:  @identifier
         }
+      end
+
+      def handle_amount(amount, is_tip)
+        if is_tip
+          tip_amount  = amount
+          amount = 0
+        else
+          tip_amount  = 0
+        end
+        [amount, tip_amount]
       end
     end
   end

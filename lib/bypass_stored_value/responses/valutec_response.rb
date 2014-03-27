@@ -48,7 +48,7 @@ module BypassStoredValue
         set_result(response[:transaction_void_response][:transaction_void_result])
       end
 
-      def parse_transaction_activate_card
+      def parse_transaction_activate_card_response
         set_result(response[:transaction_activate_card_response][:transaction_activate_card_result])
       end
 

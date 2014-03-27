@@ -60,18 +60,36 @@ describe BypassStoredValue::Clients::ValutecClient do
     end
 
     describe '#authorize' do
-      it 'should call #transaction_restaurant_sale with the appropriate message' do
-        @client.should_receive(:transaction_restaurant_sale).with({
-          ClientKey: '45c4ddcc-feb1-4cb1-99f0-1ba71d6d8f69',
-          TerminalID: '184012',
-          ProgramType: 'Gift',
-          ServerID: '1234',
-          Identifier: '1000100',
-          CardNumber: '12345',
-          Amount: 10.00,
-          TipAmount: 5.00
-        })
-        @client.authorize('12345', 10.00, 5.00)
+      context 'with no tip' do
+        it 'should call #transaction_restaurant_sale with the appropriate message' do
+          @client.should_receive(:transaction_restaurant_sale).with({
+            ClientKey: '45c4ddcc-feb1-4cb1-99f0-1ba71d6d8f69',
+            TerminalID: '184012',
+            ProgramType: 'Gift',
+            ServerID: '1234',
+            Identifier: '1000100',
+            CardNumber: '12345',
+            Amount: 10.00,
+            TipAmount: 0
+          })
+          @client.authorize('12345', 10.00, false)
+        end
+      end
+
+      context 'with a tip' do
+        it 'should call #transaction_restaurant_sale with the appropriate message' do
+          @client.should_receive(:transaction_restaurant_sale).with({
+            ClientKey: '45c4ddcc-feb1-4cb1-99f0-1ba71d6d8f69',
+            TerminalID: '184012',
+            ProgramType: 'Gift',
+            ServerID: '1234',
+            Identifier: '1000100',
+            CardNumber: '12345',
+            Amount: 0,
+            TipAmount: 10.00
+          })
+          @client.authorize('12345', 10.00, true)
+        end
       end
     end
 

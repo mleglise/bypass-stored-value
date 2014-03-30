@@ -28,7 +28,7 @@ module BypassStoredValue
 
     private
 
-      ACTIONS = [:transaction_restaurant_sale, :transaction_card_balance, :transaction_void, :transaction_activate_card]
+      ACTIONS = [:transaction_restaurant_sale, :transaction_card_balance, :transaction_add_value, :transaction_activate_card]
 
       def parse
         raise BypassStoredValue::Exception::ActionNotFound unless ACTIONS.include?(action)
@@ -44,8 +44,8 @@ module BypassStoredValue
         set_result(response[:transaction_card_balance_response][:transaction_card_balance_result])
       end
 
-      def parse_transaction_void_response
-        set_result(response[:transaction_void_response][:transaction_void_result])
+      def parse_transaction_add_value_response
+        set_result(response[:transaction_add_value_response][:transaction_add_value_result])
       end
 
       def parse_transaction_activate_card_response

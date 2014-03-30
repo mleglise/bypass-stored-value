@@ -46,21 +46,22 @@ describe BypassStoredValue::Clients::ValutecClient do
 
     describe '#refund' do
       it 'should respond to 3 arguments' do #we submit amounts with refund requests for other stored value clients, so #refund needs to accept 3 args
-        @client.stub(:transaction_void)
+        @client.stub(:transaction_add_value)
         expect { @client.refund('12345', '123456789', nil) }.not_to raise_error
       end
 
       it 'should call #transaction_void' do
-        @client.should_receive(:transaction_void).with({
+        @client.should_receive(:transaction_add_value).with({
           ClientKey: '45c4ddcc-feb1-4cb1-99f0-1ba71d6d8f69',
           TerminalID: '184012',
           ProgramType: 'Gift',
           CardNumber: '12345',
           ServerID: '1234',
           Identifier: '1000100',
-          RequestAuthCode: '123456789'
+          RequestAuthCode: '123456789',
+          Amount: 5.00
         })
-        @client.refund('12345', '123456789')
+        @client.refund('12345', '123456789', 5.00)
       end
     end
 

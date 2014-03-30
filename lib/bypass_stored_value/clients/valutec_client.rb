@@ -60,7 +60,7 @@ module BypassStoredValue
         }))
       end
 
-      def refund(code, transaction_id)
+      def refund(code, transaction_id, amount=nil) #amount is always submitted by the backend, but not needed here
         transaction_void(basic_request_params.merge({
           CardNumber: code,
           RequestAuthCode: transaction_id

@@ -50,17 +50,8 @@ describe BypassStoredValue::Clients::ValutecClient do
         expect { @client.refund('12345', '123456789', nil) }.not_to raise_error
       end
 
-      it 'should call #transaction_void' do
-        @client.should_receive(:transaction_add_value).with({
-          ClientKey: '45c4ddcc-feb1-4cb1-99f0-1ba71d6d8f69',
-          TerminalID: '184012',
-          ProgramType: 'Gift',
-          CardNumber: '12345',
-          ServerID: '1234',
-          Identifier: '1000100',
-          RequestAuthCode: '123456789',
-          Amount: 5.00
-        })
+      it 'should call #reload_account' do
+        @client.should_receive(:reload_account).with('12345', 5.00)
         @client.refund('12345', '123456789', 5.00)
       end
     end
@@ -120,6 +111,21 @@ describe BypassStoredValue::Clients::ValutecClient do
           Amount: 10.00
         })
         @client.issue('1234567', 10.00)
+      end
+    end
+
+    describe '#reload_account' do
+      it 'should call #transaction_add_value with the appropriate message' do
+        @client.should_receive(:transaction_add_value).with({
+          ClientKey: '45c4ddcc-feb1-4cb1-99f0-1ba71d6d8f69',
+          TerminalID: '184012',
+          ProgramType: 'Gift',
+          ServerID: '1234',
+          Identifier: '1000100',
+          CardNumber: '1234567',
+          Amount: 10.00
+        })
+        @client.reload_account('1234567', 10.00)
       end
     end
   end

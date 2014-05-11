@@ -23,7 +23,7 @@ module BypassStoredValue
       if @result.has_key? :error
         @message = "Error #{@result[:error]}"
       else
-        @balance = @result[:card][:balance]
+        @balance = @result[:card][:balance] / 100
         @transaction_id = @result[:transaction][:id]
       end
 

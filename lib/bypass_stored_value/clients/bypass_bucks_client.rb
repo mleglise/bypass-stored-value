@@ -17,7 +17,7 @@ module BypassStoredValue
       # ex) [["124556", "19.99", "3"]]
       # you pass in the same sku twice also, [["124556", "19.99", "3"], ["124556", "19.99", "1"]]  , same as [["124556", "19.99", "4"]]
       def settle(card_number, amount, tip = false, line_items = nil)
-        redeem(card_number, amount, line_items)
+        redeem(card_number, (amount.to_f*100).to_i, line_items)
       end
 
       def authorize(card_number, amount, tip = false)
@@ -34,34 +34,34 @@ module BypassStoredValue
 
       #
       def issue(card_number, amount)
-        activate(card_number, amount)
+        activate(card_number, (amount.to_f*100).to_i)
       end
 
       def refund(card_number, transaction_code, amount)
-        increment(card_number, amount)
+        increment(card_number, (amount.to_f*100).to_i)
       end
 
       #Activate
       def activate(card_number, amount)
-        transaction_code = "act#{card_number}"
-        make_put_request("cards/#{card_number}/activate", transaction_code, :activate)
+        reference_number = "act#{card_number}"
+        make_put_request("cards/#{card_number}/activate", {reference_number: reference_number, amount: (amount.to_f*100).to_i}, :activate)
       end
 
       #Redeem
       def redeem(card_number, amount, line_items)
-        transaction_code =  "red#{rand(10**12)}"
-        make_put_request("cards/#{card_number}/redeem", transaction_code, :redeem)
+        reference_number =  "red#{rand(10**12)}"
+        make_put_request("cards/#{card_number}/redeem", {reference_number: reference_number, amount: (amount.to_f*100).to_i}, :redeem)
       end
 
       #Increment
       def increment(card_number, amount)
-        transaction_code = "inc#{card_number}#{rand(0..100)}"
-        make_put_request("cards/#{card_number}/increment", transaction_code, :increment)
+        reference_number = "inc#{card_number}#{rand(0..100)}"
+        make_put_request("cards/#{card_number}/increment", {reference_number: reference_number, amount: (amount.to_f*100).to_i}, :increment)
       end
 
       #Balance
       def get_balance(card_number)
-        make_get_request("cards/#{card_number}/get_balance", "bal#{card_number}T#{Time.now.to_i}", :get_balance)
+        make_get_request("cards/#{card_number}/get_balance",{reference_number:  "bal#{card_number}T#{Time.now.to_i}"}, :get_balance)
       end
 
       #Void - previous transaction
@@ -89,7 +89,7 @@ module BypassStoredValue
           req.url url
           req.options[:timeout] = 15           # open/read timeout in seconds
           req.options[:open_timeout] = 5
-          req.body = params.to_json
+          req.params = params
         end
         handle_response(response, method)
       end

@@ -17,7 +17,7 @@ module BypassStoredValue
       # ex) [["124556", "19.99", "3"]]
       # you pass in the same sku twice also, [["124556", "19.99", "3"], ["124556", "19.99", "1"]]  , same as [["124556", "19.99", "4"]]
       def settle(card_number, amount, tip = false, line_items = nil)
-        redeem(card_number, (amount.to_f*100).to_i, line_items)
+        redeem(card_number, amount, line_items)
       end
 
       def authorize(card_number, amount, tip = false)
@@ -34,11 +34,11 @@ module BypassStoredValue
 
       #
       def issue(card_number, amount)
-        activate(card_number, (amount.to_f*100).to_i)
+        activate(card_number, amount)
       end
 
       def refund(card_number, transaction_code, amount)
-        increment(card_number, (amount.to_f*100).to_i)
+        increment(card_number, amount)
       end
 
       #Activate

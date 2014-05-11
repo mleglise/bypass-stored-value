@@ -25,21 +25,12 @@ describe BypassStoredValue::Clients::BypassBucksClient do
 
   end
 
-  it 'can get balance' do
-
-    stub_request(:get, "https://#{@user}:#{@password}@#{@endpoint}/cards/#{@card_number}/get_balance")
-    .with(:body => /(...)/)
-    .to_return(:body => fixture("response/bypass_bucks/get_balance.json"))
-    response = @client.check_balance '2972774077005123'
-    response.balance.should eql(100)
-  end
-
   it 'can activate a card' do
     stub_request(:put, "https://#{@user}:#{@password}@#{@endpoint}/cards/#{@card_number}/activate")
     .with(:body => /(...)/)
     .to_return(:body => fixture("response/bypass_bucks/show_card.json"))
     response = @client.activate(@card_number, 195)
-    response.balance.should eql(195)
+    response.balance.should eql(195.0)
   end
 
   it 'can deduct $10' do

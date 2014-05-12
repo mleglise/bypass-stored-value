@@ -118,7 +118,7 @@ module BypassStoredValue
       end
 
       def end_point
-        @test_mode ? "https://bypassbucks-integration.bypasslane.com" : "https://bypassbucks.bypasslane.com"
+        @test_mode ? "https://bypassbucks-integration.bypasslane.com" : "https://bypassbucks-integration.bypasslane.com"
       end
 
       def handle_response(response, method)

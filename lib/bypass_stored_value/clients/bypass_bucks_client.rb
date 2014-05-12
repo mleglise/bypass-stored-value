@@ -45,59 +45,37 @@ module BypassStoredValue
       #Activate
       def activate(card_number, amount)
         reference_number = "act#{card_number}"
-        make_put_request("cards/#{card_number}/activate", {reference_number: reference_number, amount: (amount.to_f*100).to_i}, :activate)
+        make_request("cards/#{card_number}/activate", :activate, :put, {reference_number: reference_number, amount: (amount.to_f*100).to_i})
       end
 
       #Redeem
       def redeem(card_number, amount, line_items)
         reference_number =  "red#{rand(10**12)}"
-        make_put_request("cards/#{card_number}/redeem", {reference_number: reference_number, amount: (amount.to_f*100).to_i}, :redeem)
+        make_request("cards/#{card_number}/redeem", :increment, :put, {reference_number: reference_number, amount: (amount.to_f*100).to_i})
       end
 
       #Increment
       def increment(card_number, amount)
         reference_number = "inc#{card_number}#{rand(0..100)}"
-        make_put_request("cards/#{card_number}/increment", {reference_number: reference_number, amount: (amount.to_f*100).to_i}, :increment)
+        make_request("cards/#{card_number}/increment", :increment, :put, {reference_number: reference_number, amount: (amount.to_f*100).to_i})
       end
 
       #Balance
       def get_balance(card_number)
-        make_get_request("cards/#{card_number}/get_balance",{reference_number:  "bal#{card_number}T#{Time.now.to_i}"}, :get_balance)
+        make_request("cards/#{card_number}/get_balance", :get_balance, :get, {reference_number:  "bal#{card_number}T#{Time.now.to_i}"})
       end
 
       #Void - previous transaction
 
       def void(card_number, transaction_id)
-        make_delete_request("cards/#{card_number}/transactions/#{transaction_id}", "del#{transaction_id}", :void)
+        make_request("cards/#{card_number}/transactions/#{transaction_id}", :void, :delete, {reference_number: "del#{transaction_id}"})
       end
 
       private
 
-      def make_put_request(url, params=nil, method)
+      def make_request(url, method, action, params=nil)
         return BypassStoredValue::MockResponse.new({}) if @mock == true
-        response = client.put do |req|
-          req.url url
-          req.options[:timeout] = 15           # open/read timeout in seconds
-          req.options[:open_timeout] = 5
-          req.body = params.to_json
-        end
-        handle_response(response, method)
-      end
-
-      def make_get_request(url, params=nil, method)
-        return BypassStoredValue::MockResponse.new({}) if @mock == true
-        response = client.get do |req|
-          req.url url
-          req.options[:timeout] = 15           # open/read timeout in seconds
-          req.options[:open_timeout] = 5
-          req.params = params
-        end
-        handle_response(response, method)
-      end
-
-      def make_delete_request(url, params=nil, method)
-        return BypassStoredValue::MockResponse.new({}) if @mock == true
-        response = client.delete do |req|
+        response = client.send(action) do |req|
           req.url url
           req.options[:timeout] = 15           # open/read timeout in seconds
           req.options[:open_timeout] = 5

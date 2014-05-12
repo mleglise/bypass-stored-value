@@ -13,9 +13,8 @@ module BypassStoredValue
         @mock = args.fetch(:mock, false)
       end
 
-      #Line Items need to be an array of arrays like [["skunumber", "cost", "qty"],["skunumber", "cost", "qty"]],
-      # ex) [["124556", "19.99", "3"]]
-      # you pass in the same sku twice also, [["124556", "19.99", "3"], ["124556", "19.99", "1"]]  , same as [["124556", "19.99", "4"]]
+      #Stored Value Gateway interface
+
       def settle(card_number, amount, tip = false, line_items = nil)
         redeem(card_number, amount, line_items)
       end
@@ -40,6 +39,8 @@ module BypassStoredValue
       def refund(card_number, transaction_code, amount)
         increment(card_number, amount)
       end
+
+      #Bypass Bucks actions
 
       #Activate
       def activate(card_number, amount)

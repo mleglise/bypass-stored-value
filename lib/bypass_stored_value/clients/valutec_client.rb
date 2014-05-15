@@ -25,7 +25,7 @@ module BypassStoredValue
         client
       end
 
-      def settle(code, amount, tip_amount=0)
+      def settle(code, amount, tip_amount=0, line_items=nil)
         BypassStoredValue::ValutecResponse.new(nil, 'settle', true)
       end
 

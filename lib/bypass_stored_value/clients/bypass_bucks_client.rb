@@ -20,7 +20,7 @@ module BypassStoredValue
       end
 
       def authorize(card_number, amount, tip = false)
-        raise NotImplementedError
+        get_balance(card_number)
       end
 
       def post_transaction(line_items = nil, amount = nil)
